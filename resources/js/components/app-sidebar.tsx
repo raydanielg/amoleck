@@ -21,6 +21,10 @@ import {
     Dumbbell,
     UserRound,
     KeyRound,
+    Scissors,
+    CalendarClock,
+    BedSingle,
+    BarChart3,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -171,6 +175,59 @@ const navGroups: { label: string; items: (NavItem & { perm: string })[] }[] = [
                 href: '/admin/interventions',
                 icon: Dumbbell,
                 perm: 'patientcare.interventions.view',
+            },
+        ],
+    },
+    {
+        label: 'Theatre & Surgery',
+        items: [
+            {
+                title: 'Theatre Dashboard',
+                href: '/admin/surgery',
+                icon: LayoutGrid,
+                perm: 'surgery.dashboard.view',
+            },
+            {
+                title: 'Surgical Cases',
+                href: '/admin/surgery/cases',
+                icon: Scissors,
+                perm: 'surgery.cases.view',
+            },
+            {
+                title: 'Theatre Calendar',
+                href: '/admin/surgery/calendar',
+                icon: CalendarClock,
+                perm: 'surgery.scheduling.view',
+            },
+            {
+                title: 'Operating Theatres',
+                href: '/admin/surgery/theatres',
+                icon: Building2,
+                perm: 'surgery.theatres.view',
+            },
+            {
+                title: 'Operations',
+                href: '/admin/surgery/operations',
+                icon: Activity,
+                perm: 'surgery.cases.view',
+            },
+            {
+                title: 'Recovery / PACU',
+                href: '/admin/surgery/recovery',
+                icon: BedSingle,
+                perm: 'surgery.recovery.view',
+            },
+            {
+                title: 'Surgical Reports',
+                href: '/admin/surgery/reports',
+                icon: BarChart3,
+                perm: 'surgery.reports.view',
+            },
+            {
+                title: 'Surgery Config',
+                href: '/admin/surgery/config',
+                icon: Settings,
+                perm: 'surgery.catalogue.manage',
             },
         ],
     },

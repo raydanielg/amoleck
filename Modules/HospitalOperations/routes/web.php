@@ -89,3 +89,97 @@ Route::middleware(['auth', 'verified', 'account.active', 'module.enabled:Hospita
     Route::get('display', [\Modules\HospitalOperations\Http\Controllers\QueueController::class, 'display'])->name('display')->middleware('can:queue.view');
 });
 
+
+// ---- Phase 10: Theatre & Surgical Management ----
+use Modules\HospitalOperations\Http\Controllers\RecoveryController;
+use Modules\HospitalOperations\Http\Controllers\SurgeryController;
+use Modules\HospitalOperations\Http\Controllers\SurgicalCaseController;
+use Modules\HospitalOperations\Http\Controllers\SurgicalOperationController;
+use Modules\HospitalOperations\Http\Controllers\SurgicalPreopController;
+use Modules\HospitalOperations\Http\Controllers\TheatreController;
+
+Route::middleware(['auth', 'verified', 'account.active', 'module.enabled:HospitalOperations'])->prefix('admin/surgery')->name('admin.surgery.')->group(function () {
+    // Dashboard & configuration
+    Route::get('/', [SurgeryController::class, 'dashboard'])->name('dashboard')->middleware('can:surgery.dashboard.view');
+    Route::get('config', [SurgeryController::class, 'config'])->name('config')->middleware('can:surgery.catalogue.manage');
+    Route::post('config/specialties', [SurgeryController::class, 'storeSpecialty'])->name('specialties.store')->middleware('can:surgery.catalogue.manage');
+    Route::post('config/specialties/{specialty}', [SurgeryController::class, 'updateSpecialty'])->name('specialties.update')->middleware('can:surgery.catalogue.manage');
+    Route::post('config/procedures', [SurgeryController::class, 'storeProcedure'])->name('procedures.store')->middleware('can:surgery.catalogue.manage');
+    Route::post('config/procedures/{procedure}/transition', [SurgeryController::class, 'transitionProcedure'])->name('procedures.transition')->middleware('can:surgery.catalogue.manage');
+    Route::post('config/templates', [SurgeryController::class, 'storeTemplate'])->name('templates.store')->middleware('can:surgery.catalogue.manage');
+    Route::get('reports', [SurgeryController::class, 'reports'])->name('reports')->middleware('can:surgery.reports.view');
+
+    // Surgical cases
+    Route::get('cases', [SurgicalCaseController::class, 'index'])->name('cases.index')->middleware('can:surgery.cases.view');
+    Route::get('cases/create', [SurgicalCaseController::class, 'create'])->name('cases.create')->middleware('can:surgery.cases.create');
+    Route::post('cases', [SurgicalCaseController::class, 'store'])->name('cases.store')->middleware('can:surgery.cases.create');
+    Route::get('cases/{case}', [SurgicalCaseController::class, 'show'])->name('cases.show')->middleware('can:surgery.cases.view');
+    Route::post('cases/{case}/transition', [SurgicalCaseController::class, 'transition'])->name('cases.transition');
+    Route::post('cases/{case}/consultation', [SurgicalCaseController::class, 'saveConsultation'])->name('cases.consultation');
+    Route::post('cases/{case}/diagnoses', [SurgicalCaseController::class, 'addDiagnosis'])->name('cases.diagnoses');
+    Route::post('cases/{case}/cancel', [SurgicalCaseController::class, 'cancel'])->name('cases.cancel');
+    Route::post('cases/{case}/postpone', [SurgicalCaseController::class, 'postpone'])->name('cases.postpone');
+
+    // Pre-operative
+    Route::post('cases/{case}/preop', [SurgicalPreopController::class, 'saveAssessment'])->name('preop.save');
+    Route::post('preop/{assessment}/review', [SurgicalPreopController::class, 'reviewAssessment'])->name('preop.review');
+    Route::post('cases/{case}/anesthesia-pre', [SurgicalPreopController::class, 'saveAnesthesia'])->name('anesthesia_pre.save');
+    Route::post('anesthesia-pre/{assessment}/review', [SurgicalPreopController::class, 'reviewAnesthesia'])->name('anesthesia_pre.review');
+    Route::post('cases/{case}/consents', [SurgicalPreopController::class, 'recordConsent'])->name('consents.store');
+    Route::post('consents/{consent}/withdraw', [SurgicalPreopController::class, 'withdrawConsent'])->name('consents.withdraw');
+    Route::post('cases/{case}/checklist/init', [SurgicalPreopController::class, 'initChecklist'])->name('checklist.init');
+    Route::post('checklist-items/{item}/complete', [SurgicalPreopController::class, 'completeItem'])->name('checklist.complete');
+    Route::post('cases/{case}/blood', [SurgicalPreopController::class, 'requestBlood'])->name('blood.request');
+    Route::post('blood/{requirement}/confirm', [SurgicalPreopController::class, 'confirmBlood'])->name('blood.confirm');
+
+    // Theatres & scheduling
+    Route::get('theatres', [TheatreController::class, 'theatres'])->name('theatres')->middleware('can:surgery.theatres.view');
+    Route::post('theatres', [TheatreController::class, 'storeTheatre'])->name('theatres.store')->middleware('can:surgery.theatres.manage');
+    Route::post('theatres/{theatre}/status', [TheatreController::class, 'theatreStatus'])->name('theatres.status')->middleware('can:surgery.theatres.manage');
+    Route::post('theatres/{theatre}/hours', [TheatreController::class, 'setHours'])->name('theatres.hours')->middleware('can:surgery.theatres.manage');
+    Route::post('theatres/{theatre}/exceptions', [TheatreController::class, 'addException'])->name('theatres.exceptions')->middleware('can:surgery.theatres.manage');
+    Route::get('calendar', [TheatreController::class, 'calendar'])->name('calendar')->middleware('can:surgery.scheduling.view');
+    Route::post('cases/{case}/book', [TheatreController::class, 'book'])->name('bookings.store')->middleware('can:surgery.scheduling.create');
+    Route::post('bookings/{booking}/reschedule', [TheatreController::class, 'reschedule'])->name('bookings.reschedule')->middleware('can:surgery.scheduling.update');
+    Route::post('bookings/{booking}/cancel', [TheatreController::class, 'cancelBooking'])->name('bookings.cancel')->middleware('can:surgery.scheduling.cancel');
+    Route::post('cases/{case}/team', [TheatreController::class, 'assignStaff'])->name('team.assign');
+    Route::post('team/{assignment}/confirm', [TheatreController::class, 'confirmAssignment'])->name('team.confirm');
+    Route::post('team/{assignment}/replace', [TheatreController::class, 'replaceAssignment'])->name('team.replace');
+    Route::post('team/{assignment}/remove', [TheatreController::class, 'removeAssignment'])->name('team.remove');
+
+    // Safety & operations
+    Route::get('operations', [SurgicalOperationController::class, 'index'])->name('operations.index')->middleware('can:surgery.cases.view');
+    Route::get('operations/{operation}', [SurgicalOperationController::class, 'show'])->name('operations.show')->middleware('can:surgery.cases.view');
+    Route::post('cases/{case}/safety/verify', [SurgicalOperationController::class, 'verifySafety'])->name('safety.verify');
+    Route::post('cases/{case}/safety/exception', [SurgicalOperationController::class, 'safetyException'])->name('safety.exception');
+    Route::post('cases/{case}/operations/start', [SurgicalOperationController::class, 'start'])->name('operations.start');
+    Route::post('operations/{operation}/procedures', [SurgicalOperationController::class, 'recordProcedure'])->name('operations.procedures');
+    Route::post('operations/{operation}/complete', [SurgicalOperationController::class, 'complete'])->name('operations.complete');
+    Route::post('operations/{operation}/abort', [SurgicalOperationController::class, 'abortOp'])->name('operations.abort');
+    Route::post('operations/{operation}/notes', [SurgicalOperationController::class, 'saveNote'])->name('notes.save');
+    Route::post('notes/{note}/transition', [SurgicalOperationController::class, 'transitionNote'])->name('notes.transition');
+    Route::post('notes/{note}/amend', [SurgicalOperationController::class, 'amendNote'])->name('notes.amend');
+    Route::post('operations/{operation}/anesthesia', [SurgicalOperationController::class, 'saveAnesthesia'])->name('anesthesia.save');
+    Route::post('anesthesia/{record}/link-medication', [SurgicalOperationController::class, 'linkMedication'])->name('anesthesia.link_med');
+    Route::post('anesthesia/{record}/close', [SurgicalOperationController::class, 'closeAnesthesia'])->name('anesthesia.close');
+    Route::post('operations/{operation}/counts', [SurgicalOperationController::class, 'recordCount'])->name('counts.store');
+    Route::post('counts/{count}/resolve', [SurgicalOperationController::class, 'resolveCount'])->name('counts.resolve');
+    Route::post('operations/{operation}/specimens', [SurgicalOperationController::class, 'registerSpecimen'])->name('specimens.store');
+    Route::post('specimens/{specimen}/dispatch', [SurgicalOperationController::class, 'dispatchSpecimen'])->name('specimens.dispatch');
+    Route::post('specimens/{specimen}/receive', [SurgicalOperationController::class, 'receiveSpecimen'])->name('specimens.receive');
+    Route::post('operations/{operation}/implants', [SurgicalOperationController::class, 'recordImplant'])->name('implants.store');
+    Route::post('operations/{operation}/consumables', [SurgicalOperationController::class, 'recordConsumable'])->name('consumables.store');
+    Route::post('cases/{case}/incidents', [SurgicalOperationController::class, 'recordIncident'])->name('incidents.store');
+
+    // Recovery / PACU
+    Route::get('recovery', [RecoveryController::class, 'index'])->name('recovery')->middleware('can:surgery.recovery.view');
+    Route::post('recovery/areas', [RecoveryController::class, 'storeArea'])->name('recovery.areas.store')->middleware('can:surgery.theatres.manage');
+    Route::post('recovery/beds', [RecoveryController::class, 'storeBed'])->name('recovery.beds.store')->middleware('can:surgery.theatres.manage');
+    Route::post('recovery/{record}/receive', [RecoveryController::class, 'receive'])->name('recovery.receive');
+    Route::post('recovery/{record}/assess', [RecoveryController::class, 'assess'])->name('recovery.assess');
+    Route::post('recovery/{record}/clear', [RecoveryController::class, 'clear'])->name('recovery.clear');
+    Route::post('recovery/{record}/handover', [RecoveryController::class, 'createHandover'])->name('handover.create');
+    Route::post('handovers/{handover}/acknowledge', [RecoveryController::class, 'acknowledgeHandover'])->name('handover.ack');
+    Route::post('cases/{case}/postop-admission', [RecoveryController::class, 'postopAdmission'])->name('postop_admission');
+    Route::post('recovery-beds/{bed}/clean', [RecoveryController::class, 'cleanBed'])->name('recovery_beds.clean');
+});
