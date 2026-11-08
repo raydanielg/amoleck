@@ -44,7 +44,9 @@
             "Modules\\HospitalOperations\\": "Modules/HospitalOperations/app/",
             "Modules\\HospitalOperations\\Database\\": "Modules/HospitalOperations/database/",
             "Modules\\Finance\\": "Modules/Finance/app/",
-            "Modules\\Finance\\Database\\": "Modules/Finance/database/"
+            "Modules\\Finance\\Database\\": "Modules/Finance/database/",
+            "Modules\\Administration\\": "Modules/Administration/app/",
+            "Modules\\Administration\\Database\\": "Modules/Administration/database/"
         }
     },
     "autoload-dev": {

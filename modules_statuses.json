@@ -2,5 +2,6 @@
     "Foundation": true,
     "PatientCare": true,
     "HospitalOperations": true,
-    "Finance": true
+    "Finance": true,
+    "Administration": true
 }

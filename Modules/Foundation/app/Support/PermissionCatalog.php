@@ -261,6 +261,13 @@ class PermissionCatalog
                 'finance.budgets.approve' => ['Approve budgets', 'critical'],
                 'finance.procurement.validate_budget' => ['Validate budget', 'high'],
                 'finance.procurement.approve_financially' => ['Financial approve', 'critical'],
+                'hr.dashboard.view' => ['View HR dashboard', 'medium'],
+                'hr.employees.view' => ['View employees', 'medium'],
+                'hr.employees.manage' => ['Manage employees', 'high'],
+                'hr.employees.transfer' => ['Transfer employees', 'high'],
+                'hr.contracts.manage' => ['Manage contracts', 'high'],
+                'hr.positions.manage' => ['Manage positions', 'medium'],
+                'hr.reports.view' => ['HR reports', 'medium'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
