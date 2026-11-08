@@ -278,6 +278,11 @@ class PermissionCatalog
                 'hr.leave.approve' => ['Approve leave', 'high'],
                 'hr.leave.manage' => ['Manage leave', 'high'],
                 'hr.leave.adjust' => ['Adjust balances', 'critical'],
+                'hr.payroll.view' => ['View payroll', 'medium'],
+                'hr.payroll.manage' => ['Manage payroll', 'critical'],
+                'hr.payroll.approve' => ['Approve payroll', 'critical'],
+                'hr.payroll.pay' => ['Process payments', 'critical'],
+                'hr.payroll.reports.view' => ['Payroll reports', 'medium'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
