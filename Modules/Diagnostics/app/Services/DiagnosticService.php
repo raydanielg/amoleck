@@ -8,7 +8,7 @@ class DiagnosticService
 {
     public function createTest(array $data, int $userId): DiagnosticTest
     {
-        $t = DiagnosticTest::create($data + ['version' => 1]);
+        $t = DiagnosticTest::create($data + ['version' => 1, 'active' => true]);
         Audit::record('dx.test_created', null, null, ['test' => $t->code]);
         return $t;
     }
