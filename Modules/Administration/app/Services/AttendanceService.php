@@ -30,7 +30,7 @@ class AttendanceService
         abort_unless($e->status === 'active', 422);
         $today = today()->toDateString();
         $r = AttendanceRecord::create(['employee_id' => $e->id, 'branch_id' => $branchId, 'work_date' => $today, 'clock_in' => now(), 'status' => 'present', 'method' => $method ?? 'web', 'recorded_by' => $userId]);
-        $a = ShiftAssignment::where('employee_id', $e->id)->where('work_date', $today)->first();
+        $a = ShiftAssignment::where('employee_id', $e->id)->whereDate('work_date', $today)->first();
         if ($a) {
             $r->update(['shift_assignment_id' => $a->id]);
             $scheduled = Carbon::parse($a->work_date->toDateString().' '.$a->shift->starts_at)->addMinutes($a->shift->grace_minutes);
@@ -75,8 +75,8 @@ class AttendanceService
     /** Absence candidates: scheduled today + no attendance record — HR review, not auto-absent. */
     public function absenceCandidates(int $branchId): \Illuminate\Support\Collection
     {
-        return ShiftAssignment::where('branch_id', $branchId)->where('work_date', today())
-            ->whereDoesntHave('employee.attendanceRecords', fn ($q) => $q->where('work_date', today()))
+        return ShiftAssignment::where('branch_id', $branchId)->whereDate('work_date', today())
+            ->whereDoesntHave('employee.attendanceRecords', fn ($q) => $q->whereDate('work_date', today()))
             ->with('employee', 'shift')->get();
     }
 
