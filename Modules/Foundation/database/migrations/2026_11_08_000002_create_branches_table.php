@@ -1,0 +1,45 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('branches', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('address')->nullable();
+            $table->string('region')->nullable();
+            $table->string('district')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('manager_name')->nullable();
+            $table->string('status')->default('active')->index();
+            $table->date('opening_date')->nullable();
+            $table->json('working_hours')->nullable();
+            $table->json('settings')->nullable();
+            $table->string('logo')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('branch_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('branch_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_primary')->default(false);
+            $table->timestamps();
+            $table->unique(['branch_id', 'user_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('branch_user');
+        Schema::dropIfExists('branches');
+    }
+};

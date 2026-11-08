@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -10,6 +9,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
@@ -32,6 +32,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureLoginHistory();
     }
 
     /**
@@ -40,7 +41,38 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::createUsersUsing(CreateNewUser::class);
+
+        Fortify::authenticateUsing(function (Request $request) {
+            $login = Str::lower($request->input('email'));
+            $user = \App\Models\User::where('email', $login)->orWhere('username', $login)->first();
+
+            if ($user && $user->status !== 'active') {
+                throw ValidationException::withMessages([
+                    'email' => 'This account is '.$user->status.'. Contact an administrator.',
+                ]);
+            }
+
+            if ($user && $user->locked_until?->isFuture()) {
+                throw ValidationException::withMessages([
+                    'email' => 'Account temporarily locked. Try again later.',
+                ]);
+            }
+
+            if ($user && ! \Illuminate\Support\Facades\Hash::check($request->input('password'), $user->password)) {
+                $user->increment('failed_login_attempts');
+                if ($user->failed_login_attempts >= 5) {
+                    $user->update(['locked_until' => now()->addMinutes(15), 'failed_login_attempts' => 0]);
+                }
+
+                return null;
+            }
+
+            if ($user) {
+                $user->update(['failed_login_attempts' => 0, 'locked_until' => null]);
+            }
+
+            return $user;
+        });
     }
 
     /**
@@ -67,10 +99,6 @@ class FortifyServiceProvider extends ServiceProvider
             'status' => $request->session()->get('status'),
         ]));
 
-        Fortify::registerView(fn () => Inertia::render('auth/register', [
-            'passwordRules' => Password::defaults()->toPasswordRulesString(),
-        ]));
-
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
 
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
@@ -79,6 +107,45 @@ class FortifyServiceProvider extends ServiceProvider
     /**
      * Configure rate limiting.
      */
+    private function configureLoginHistory(): void
+    {
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
+            $event->user->update(['last_login_at' => now()]);
+            \Modules\Foundation\Models\LoginHistory::create([
+                'user_id' => $event->user->id,
+                'email' => $event->user->email,
+                'event' => 'login',
+                'ip_address' => request()->ip(),
+                'user_agent' => substr((string) request()->userAgent(), 0, 500),
+                'created_at' => now(),
+            ]);
+            \Modules\Foundation\Support\Audit::record('auth.login');
+        });
+
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Logout::class, function ($event) {
+            if ($event->user) {
+                \Modules\Foundation\Models\LoginHistory::create([
+                    'user_id' => $event->user->id,
+                    'email' => $event->user->email,
+                    'event' => 'logout',
+                    'ip_address' => request()->ip(),
+                    'created_at' => now(),
+                ]);
+                \Modules\Foundation\Support\Audit::record('auth.logout');
+            }
+        });
+
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Failed::class, function ($event) {
+            \Modules\Foundation\Models\LoginHistory::create([
+                'user_id' => $event->user?->id,
+                'email' => $event->credentials['email'] ?? null,
+                'event' => 'failed',
+                'ip_address' => request()->ip(),
+                'created_at' => now(),
+            ]);
+        });
+    }
+
     private function configureRateLimiting(): void
     {
         RateLimiter::for('two-factor', function (Request $request) {
@@ -89,12 +156,6 @@ class FortifyServiceProvider extends ServiceProvider
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
-        });
-
-        RateLimiter::for('passkeys', function (Request $request) {
-            return Limit::perMinute(10)->by(
-                ($request->input('credential.id') ?: $request->session()->getId()).'|'.$request->ip(),
-            );
         });
     }
 }

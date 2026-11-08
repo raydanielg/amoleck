@@ -1,0 +1,11 @@
+{
+    "name": "HospitalOperations",
+    "alias": "hospitaloperations",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\HospitalOperations\\Providers\\HospitalOperationsServiceProvider"
+    ],
+    "files": []
+}

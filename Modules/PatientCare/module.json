@@ -1,0 +1,11 @@
+{
+    "name": "PatientCare",
+    "alias": "patientcare",
+    "description": "Patient registration, records and multi-branch patient management.",
+    "keywords": [],
+    "priority": 2,
+    "providers": [
+        "Modules\\PatientCare\\Providers\\PatientCareServiceProvider"
+    ],
+    "files": []
+}

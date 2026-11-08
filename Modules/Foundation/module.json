@@ -1,0 +1,9 @@
+{
+    "name": "Foundation",
+    "alias": "foundation",
+    "description": "Core infrastructure: auth, RBAC, branches, settings, audit.",
+    "keywords": [],
+    "priority": 1,
+    "providers": ["Modules\\Foundation\\Providers\\FoundationServiceProvider"],
+    "files": []
+}

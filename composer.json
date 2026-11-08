@@ -15,7 +15,9 @@
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
-        "laravel/wayfinder": "^0.1.14"
+        "laravel/wayfinder": "^0.1.14",
+        "nwidart/laravel-modules": "*",
+        "spatie/laravel-permission": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -34,7 +36,13 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Modules\\Foundation\\": "Modules/Foundation/app/",
+            "Modules\\Foundation\\Database\\": "Modules/Foundation/database/",
+            "Modules\\PatientCare\\": "Modules/PatientCare/app/",
+            "Modules\\PatientCare\\Database\\": "Modules/PatientCare/database/",
+            "Modules\\HospitalOperations\\": "Modules/HospitalOperations/app/",
+            "Modules\\HospitalOperations\\Database\\": "Modules/HospitalOperations/database/"
         }
     },
     "autoload-dev": {
@@ -99,8 +107,7 @@
         "laravel": {
             "dont-discover": [],
             "installer": {
-                "post-create-project": [
-                ]
+                "post-create-project": []
             }
         }
     },
@@ -110,7 +117,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
     "minimum-stability": "stable",

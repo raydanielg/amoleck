@@ -17,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        $middleware->alias([
+            'account.active' => \Modules\Foundation\Http\Middleware\EnsureAccountIsActive::class,
+            'module.enabled' => \Modules\Foundation\Http\Middleware\EnsureModuleEnabled::class,
+            'branch.context' => \Modules\Foundation\Http\Middleware\BranchContextMiddleware::class,
+        ]);
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
