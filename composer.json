@@ -46,7 +46,9 @@
             "Modules\\Finance\\": "Modules/Finance/app/",
             "Modules\\Finance\\Database\\": "Modules/Finance/database/",
             "Modules\\Administration\\": "Modules/Administration/app/",
-            "Modules\\Administration\\Database\\": "Modules/Administration/database/"
+            "Modules\\Administration\\Database\\": "Modules/Administration/database/",
+            "Modules\\Inventory\\": "Modules/Inventory/app/",
+            "Modules\\Inventory\\Database\\": "Modules/Inventory/database/"
         }
     },
     "autoload-dev": {

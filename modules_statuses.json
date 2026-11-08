@@ -3,5 +3,6 @@
     "PatientCare": true,
     "HospitalOperations": true,
     "Finance": true,
-    "Administration": true
+    "Administration": true,
+    "Inventory": true
 }
