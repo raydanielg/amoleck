@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class SurgicalOperation extends Model
 {
     protected $casts = ['patient_in_at' => 'datetime', 'anesthesia_start_at' => 'datetime', 'anesthesia_end_at' => 'datetime', 'procedure_start_at' => 'datetime', 'procedure_end_at' => 'datetime', 'patient_out_at' => 'datetime'];
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function patient(): BelongsTo { return $this->belongsTo(\Modules\PatientCare\Models\Patient::class); }
     public function theatre(): BelongsTo { return $this->belongsTo(OperatingTheatre::class,'operating_theatre_id'); }
     public function booking(): BelongsTo { return $this->belongsTo(SurgicalBooking::class,'surgical_booking_id'); }

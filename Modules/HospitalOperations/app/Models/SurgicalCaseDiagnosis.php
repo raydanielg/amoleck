@@ -10,5 +10,5 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SurgicalCaseDiagnosis extends Model
 {
     protected $table = 'surgical_case_diagnoses';
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
 }

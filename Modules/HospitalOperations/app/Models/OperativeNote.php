@@ -12,7 +12,7 @@ class OperativeNote extends Model
 {
     protected $casts = ['finalized_at' => 'datetime'];
     public function operation(): BelongsTo { return $this->belongsTo(SurgicalOperation::class); }
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function author(): BelongsTo { return $this->belongsTo(\App\Models\User::class,'author_id'); }
     public function versions(): HasMany { return $this->hasMany(OperativeNoteVersion::class); }
 }

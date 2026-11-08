@@ -85,7 +85,7 @@ class TheatreService
     {
         abort_if(in_array($t->status, self::UNBOOKABLE_STATUSES), 422, "Theatre {$t->code} is {$t->status}.");
         $exc = $t->exceptions()->where('date', $date)->first();
-        abort_if($exc && ! $exc->available, 422, "Theatre unavailable on {$date}: {$exc->reason}");
+        abort_if($exc && ! $exc->available, 422, 'Theatre unavailable on '.$date.': '.$exc?->reason);
         if (! $emergency) {
             $hours = $t->hours()->where('day_of_week', Carbon::parse($date)->dayOfWeek)->where('active', true)->first();
             if ($hours) {

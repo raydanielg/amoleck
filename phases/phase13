@@ -1,0 +1,1205 @@
+Tunaendelea na PHASE 14 — LAUNDRY & LINEN MANAGEMENT SYSTEM.
+
+Moduli hii itasimamia nguo za hospitali, mashuka, taulo, sare za wafanyakazi, ukusanyaji wa nguo chafu, sorting, washing, disinfection, drying, ironing, storage na distribution kwa departments na wards.
+
+Itatumia Inventory iliyopo kwa vifaa na consumables, Foundation kwa users na branches, na HospitalOperations kwa departments na wards.
+
+# PHASE 14 — LAUNDRY & LINEN MANAGEMENT SYSTEM
+
+## Master Developer Implementation Prompt
+
+You are a senior Laravel engineer and healthcare operations systems architect.
+
+Implement Phase 14: Laundry & Linen Management System within the existing Hospital Management System.
+
+This must be a production-oriented implementation integrated into the existing Laravel Modular Monolith.
+
+Do not build an isolated laundry application or duplicate existing hospital infrastructure.
+
+---
+
+# 1. ARCHITECTURE REQUIREMENTS
+
+Preserve the established architecture:
+
+- Laravel Modular Monolith.
+- `nwidart/laravel-modules`.
+- Laravel Blade.
+- Tailwind CSS.
+- MySQL/MariaDB.
+- Existing Foundation authentication and RBAC.
+- Existing branch management.
+- Existing AuditLogService.
+- Existing Inventory module.
+- Existing HospitalOperations module.
+- Existing Finance module.
+- Existing notification infrastructure.
+
+Primary module:
+
+`Modules/Laundry`
+
+If a laundry or linen module already exists, inspect and extend it.
+
+Do not introduce React, Next.js, Vue, NestJS, microservices or another backend.
+
+The system must support multiple hospital branches while maintaining one organization-wide operational architecture.
+
+# 2. DEPENDENCY AUDIT
+
+Before implementation, inspect:
+
+1. Foundation users, permissions and branch access.
+2. HospitalOperations departments, wards and beds.
+3. Inventory items, warehouses, stock ledger and equipment register.
+4. Finance service pricing, invoices and payments.
+5. Existing procurement and supplier management.
+6. Existing maintenance and work-order functionality.
+7. Existing notifications.
+8. Existing reporting and export infrastructure.
+9. Existing audit logging.
+10. Existing module navigation and UI conventions.
+
+Produce a dependency report showing what already exists, what will be reused and what gaps remain.
+
+Do not create duplicate supplier, procurement, inventory, accounting, employee or equipment management systems.
+
+# 3. MODULE OBJECTIVES
+
+The Laundry & Linen Management System must manage the complete operational lifecycle of hospital linen and reusable textile items.
+
+It should support:
+
+- Linen catalogue management.
+- Linen classification.
+- Linen ownership and department allocation.
+- Linen stock and circulation tracking.
+- Dirty linen collection.
+- Collection requests.
+- Dirty linen weighing and counting.
+- Contaminated or special-handling linen identification.
+- Sorting and segregation.
+- Washing batch management.
+- Disinfection process recording.
+- Drying and ironing.
+- Quality inspection.
+- Rejected linen management.
+- Clean linen storage.
+- Distribution to wards and departments.
+- Linen returns.
+- Lost and damaged linen.
+- Linen condemnation and retirement.
+- Laundry equipment monitoring.
+- Consumables integration.
+- Laundry operational expenses.
+- Laundry dashboards and reports.
+
+The module must distinguish between reusable linen circulation and consumable inventory.
+
+# 4. LINEN CATALOGUE
+
+Create a configurable linen catalogue.
+
+Examples:
+
+- Bed sheets.
+- Pillowcases.
+- Blankets.
+- Patient gowns.
+- Towels.
+- Staff uniforms.
+- Surgical gowns.
+- Theatre drapes.
+- Curtains.
+- Reusable cleaning cloths.
+- Other approved hospital textiles.
+
+Capture:
+
+- Linen item code.
+- Item name.
+- Category.
+- Description.
+- Unit of measurement.
+- Standard size.
+- Colour or identification code.
+- Ownership type.
+- Replacement value, if maintained by Finance.
+- Expected useful life.
+- Approved washing instructions.
+- Special handling requirements.
+- Active status.
+
+Support configurable categories rather than hardcoding a fixed list.
+
+Distinguish:
+
+1. Individually tracked reusable items.
+2. Bulk-counted reusable items.
+3. Consumable textile products.
+
+Do not track a reusable sheet as a new procurement stock receipt every time it returns from washing.
+
+# 5. LINEN IDENTIFICATION AND TRACKING
+
+Support different tracking methods:
+
+- Unique barcode.
+- QR code.
+- RFID-ready identifier.
+- Batch or bulk quantity tracking.
+
+For individually tracked items, generate a unique identifier.
+
+Example:
+
+`LIN-2026-000001`
+
+Requirements:
+
+- Prevent duplicate identifiers.
+- Support barcode and QR scanning through a browser-compatible scanning approach where available.
+- Do not require RFID hardware unless it actually exists.
+- Preserve item movement history.
+- Track current operational status.
+- Track current location.
+- Support missing-item investigation.
+
+Suggested item statuses:
+
+- Available
+- Issued
+- In Use
+- Awaiting Collection
+- Collected
+- In Sorting
+- Washing
+- Drying
+- Ironing
+- Quality Inspection
+- Clean Storage
+- Damaged
+- Missing
+- Quarantined
+- Condemned
+- Retired
+
+For bulk tracking, record quantity by item type, department and workflow state.
+
+# 6. LINEN REQUESTS AND DEPARTMENT ALLOCATION
+
+Implement linen requests from authorized hospital departments.
+
+Departments and wards must come from HospitalOperations.
+
+A department may request:
+
+- Initial linen allocation.
+- Routine replenishment.
+- Emergency replenishment.
+- Replacement for damaged items.
+- Additional patient-care requirements.
+- Special event or operational allocation.
+
+Capture:
+
+- Request number.
+- Branch.
+- Requesting department.
+- Requesting employee.
+- Requested items.
+- Requested quantities.
+- Reason.
+- Priority.
+- Required date.
+- Approval status.
+- Fulfilment status.
+
+Suggested request statuses:
+
+- Draft
+- Submitted
+- Under Review
+- Approved
+- Partially Approved
+- Rejected
+- Partially Fulfilled
+- Fulfilled
+- Cancelled
+
+Requirements:
+
+- Validate available clean linen before fulfilment.
+- Prevent unauthorized issue.
+- Support partial fulfilment.
+- Record the receiving employee.
+- Record the actual quantity issued.
+- Maintain allocation history.
+- Prevent duplicate issue transactions.
+
+# 7. DIRTY LINEN COLLECTION
+
+Implement a controlled dirty linen collection workflow.
+
+Allow authorized departments to create collection requests.
+
+Capture:
+
+- Collection number.
+- Branch.
+- Source department or ward.
+- Collection location.
+- Collection date and time.
+- Requested collection time.
+- Collection staff.
+- Linen categories.
+- Expected quantities.
+- Actual quantities.
+- Weight, where measured.
+- Collection notes.
+- Special handling classification.
+
+Collection statuses:
+
+- Requested
+- Assigned
+- In Progress
+- Collected
+- Received at Laundry
+- Discrepancy Reported
+- Cancelled
+
+Requirements:
+
+- Support routine and urgent collections.
+- Support scheduled collection routes.
+- Record actual quantities received.
+- Capture discrepancies between expected and received quantities.
+- Preserve the original collection record.
+- Require confirmation when laundry staff receive the collection.
+- Prevent a collection from being received twice.
+
+# 8. CONTAMINATED LINEN AND SEGREGATION
+
+Provide a configurable segregation workflow.
+
+Support categories defined by approved hospital infection-prevention policies.
+
+Examples may include:
+
+- General soiled linen.
+- Blood or body-fluid contaminated linen.
+- Isolation-related linen.
+- Theatre linen.
+- Special-handling linen.
+- Damaged or unsuitable linen.
+
+Important rules:
+
+- Do not invent infection-control standards.
+- Use approved hospital policies and validated procedures.
+- Do not assume every contaminated item requires the same processing method.
+- Restrict special-handling information to authorized staff.
+- Keep clean and dirty workflow states separate.
+- Prevent contaminated or unprocessed linen from entering clean storage.
+- Record any manual override with a reason and authorized user.
+
+Provide sorting records that capture:
+
+- Collection reference.
+- Linen category.
+- Classification.
+- Quantity.
+- Weight.
+- Sorting staff.
+- Sorting timestamp.
+- Assigned processing workflow.
+- Notes.
+
+# 9. LAUNDRY PROCESSING BATCHES
+
+Create batch-based laundry processing.
+
+Generate unique batch references:
+
+`WASH-2026-000001`
+
+A batch should contain one or more compatible linen categories according to approved processing rules.
+
+Capture:
+
+- Batch number.
+- Branch.
+- Washing machine reference.
+- Linen categories.
+- Source collection references.
+- Input quantities.
+- Input weight.
+- Processing method.
+- Detergent or chemical references.
+- Operator.
+- Start time.
+- End time.
+- Process status.
+- Inspection result.
+
+Suggested batch statuses:
+
+- Created
+- Ready
+- In Progress
+- Completed
+- Failed
+- On Hold
+- Cancelled
+- Awaiting Inspection
+
+Support processing stages:
+
+1. Batch preparation.
+2. Sorting confirmation.
+3. Washing.
+4. Approved disinfection process, where applicable.
+5. Rinsing.
+6. Drying.
+7. Ironing or finishing.
+8. Quality inspection.
+9. Clean storage transfer.
+
+The exact process stages must be configurable by approved laundry procedures.
+
+Do not automatically classify a batch as disinfected merely because a washing record exists.
+
+# 10. PROCESS PARAMETERS AND QUALITY CONTROL
+
+Allow approved staff to configure process parameters.
+
+Examples:
+
+- Washing program.
+- Duration.
+- Temperature.
+- Chemical reference.
+- Dosage.
+- Disinfection method.
+- Drying method.
+- Operator observations.
+
+Do not hardcode universal infection-control temperatures, chemical concentrations or exposure times.
+
+Use hospital-approved procedures and applicable verified requirements.
+
+For each processing stage, record:
+
+- Required parameters.
+- Actual parameters.
+- Operator.
+- Equipment.
+- Start and completion timestamps.
+- Deviations.
+- Corrective actions.
+- Supervisor verification where required.
+
+If a required parameter is missing or outside the configured approved limits:
+
+- Flag the stage.
+- Require an authorized review.
+- Prevent automatic progression to clean storage.
+- Record the corrective action.
+
+# 11. QUALITY INSPECTION
+
+After processing, require quality inspection.
+
+Inspection checklist may include:
+
+- Visible cleanliness.
+- Odour.
+- Physical damage.
+- Stains.
+- Textile integrity.
+- Dryness.
+- Correct item classification.
+- Packaging or handling requirements.
+
+Capture:
+
+- Batch reference.
+- Inspection employee.
+- Inspection date and time.
+- Accepted quantity.
+- Rejected quantity.
+- Rejection reason.
+- Reprocessing recommendation.
+- Supervisor approval.
+
+Inspection results:
+
+- Accepted
+- Partially Accepted
+- Rejected
+- Reprocessing Required
+- Quarantined
+
+Rules:
+
+- Rejected linen must not enter clean stock.
+- Reprocessing must create a traceable workflow.
+- Do not overwrite the original inspection.
+- Preserve inspection history.
+- Record damaged items separately from process failures.
+
+# 12. CLEAN LINEN STORAGE
+
+Implement clean linen storage management.
+
+Storage hierarchy:
+
+Branch\
+→ Laundry Facility\
+→ Clean Linen Room\
+→ Storage Area\
+→ Shelf / Location
+
+Capture:
+
+- Storage code.
+- Storage type.
+- Branch.
+- Capacity.
+- Current quantity.
+- Linen category.
+- Storage conditions, where applicable.
+- Status.
+- Last inspection.
+
+Requirements:
+
+- Only approved clean linen can enter clean storage.
+- Record all incoming quantities.
+- Record all outgoing quantities.
+- Prevent negative quantities.
+- Prevent duplicate batch transfer.
+- Support first-in-first-out rotation where appropriate.
+- Preserve batch and processing traceability.
+- Support stock reconciliation.
+- Record damaged or expired stock according to configured policies.
+
+Do not confuse reusable linen circulation with the Inventory module's ordinary consumable stock ledger.
+
+Define a clear ownership boundary:
+
+- Laundry owns reusable linen circulation and processing.
+- Inventory owns canonical consumable stock and its ledger.
+- Finance owns financial valuation and accounting.
+
+# 13. CLEAN LINEN DISTRIBUTION
+
+Implement distribution to hospital departments and wards.
+
+Capture:
+
+- Distribution number.
+- Branch.
+- Source clean storage.
+- Destination department or ward.
+- Linen category.
+- Quantity requested.
+- Quantity approved.
+- Quantity issued.
+- Issuing employee.
+- Receiving employee.
+- Date and time.
+- Acknowledgement.
+- Notes.
+
+Statuses:
+
+- Draft
+- Submitted
+- Approved
+- Picking
+- Issued
+- Partially Received
+- Received
+- Disputed
+- Cancelled
+
+Requirements:
+
+- Support partial issues and receipts.
+- Validate available quantities.
+- Maintain source and destination balances.
+- Prevent duplicate transactions.
+- Require receiving acknowledgement.
+- Support emergency issue with documented authorization.
+- Maintain full distribution history.
+
+# 14. LINEN RETURN AND CIRCULATION
+
+Support returns from departments.
+
+Capture:
+
+- Return number.
+- Source department.
+- Receiving laundry staff.
+- Linen type.
+- Quantity expected.
+- Quantity received.
+- Weight.
+- Return date and time.
+- Condition.
+- Discrepancies.
+- Notes.
+
+Return outcomes:
+
+- Accepted as Soiled
+- Damaged
+- Missing
+- Quarantined
+- Requires Investigation
+
+The system must update the operational circulation state without treating a returned dirty item as clean or available.
+
+Provide department-level linen circulation summaries.
+
+# 15. LOST, DAMAGED AND CONDEMNED LINEN
+
+Implement controlled loss and damage reporting.
+
+Capture:
+
+- Item or batch reference.
+- Department.
+- Quantity.
+- Incident date.
+- Reported by.
+- Damage or loss type.
+- Description.
+- Investigation.
+- Responsible department, if established.
+- Corrective action.
+- Approval.
+- Financial reference, where applicable.
+
+Statuses:
+
+- Reported
+- Under Investigation
+- Confirmed
+- Disputed
+- Approved for Repair
+- Approved for Replacement
+- Condemned
+- Closed
+
+Rules:
+
+- Do not automatically charge employees or departments.
+- Do not automatically deduct amounts from payroll.
+- Do not automatically write off financial assets.
+- Use Finance for approved financial adjustments.
+- Preserve investigation and approval records.
+- Require authorization for condemnation and retirement.
+
+# 16. EQUIPMENT AND MAINTENANCE INTEGRATION
+
+Reuse the Inventory equipment register and existing maintenance functionality.
+
+Potential equipment:
+
+- Washing machines.
+- Industrial dryers.
+- Ironing machines.
+- Steam equipment.
+- Linen carts.
+- Weighing scales.
+- Other approved laundry equipment.
+
+Capture operational usage references:
+
+- Equipment ID.
+- Processing batch.
+- Operator.
+- Start and end time.
+- Machine status.
+- Fault observations.
+- Maintenance reference.
+
+Requirements:
+
+- Do not create a second equipment register.
+- Prevent assignment to equipment marked out of service.
+- Record downtime.
+- Link faults to existing work orders where supported.
+- Support preventive maintenance alerts.
+- Report equipment utilization and downtime.
+
+# 17. DETERGENTS AND LAUNDRY CONSUMABLES
+
+Reuse Inventory for detergents, chemicals, packaging and other consumables.
+
+Examples:
+
+- Detergents.
+- Disinfectants.
+- Fabric softeners.
+- Stain removers.
+- Protective packaging.
+- Other approved consumables.
+
+Requirements:
+
+- Consume inventory through canonical stock issue transactions.
+- Record quantities consumed per batch where appropriate.
+- Preserve batch and expiry references.
+- Prevent use of expired, recalled or quarantined products.
+- Use FEFO where applicable.
+- Do not maintain a duplicate consumable inventory.
+- Do not update Inventory balances directly.
+
+Where chemical handling requirements exist, use approved safety data and hospital procedures.
+
+# 18. COST AND FINANCE INTEGRATION
+
+Integrate with Finance without duplicating accounting.
+
+Potential operational cost references:
+
+- Consumables.
+- Equipment maintenance.
+- Outsourced laundry services.
+- Approved service charges.
+- Operational cost allocations.
+
+Requirements:
+
+- Reuse Finance's canonical chart of accounts and posting services.
+- Reuse approved cost centres.
+- Reuse procurement and supplier records.
+- Avoid direct GL journal insertion.
+- Prevent duplicate posting.
+- Preserve source transaction references.
+- Support reporting of laundry operating costs.
+
+If a Finance capability is missing, report the integration gap rather than inventing a second accounting workflow.
+
+# 19. STAFF AND SHIFT MANAGEMENT
+
+Reuse the existing HRM employee records and Foundation users.
+
+Support operational assignments:
+
+- Laundry supervisor.
+- Laundry operator.
+- Collection staff.
+- Sorting staff.
+- Processing operator.
+- Quality inspector.
+- Storekeeper.
+- Maintenance staff.
+
+Capture:
+
+- Assigned shift.
+- Assigned task.
+- Responsible employee.
+- Task status.
+- Start and completion times.
+- Handover notes.
+
+Do not implement a duplicate HR or payroll system.
+
+# 20. DASHBOARD AND REPORTS
+
+Build a professional Laundry Dashboard.
+
+Dashboard metrics:
+
+- Total reusable linen items.
+- Available clean linen.
+- Linen currently issued.
+- Dirty linen awaiting collection.
+- Linen awaiting sorting.
+- Active washing batches.
+- Batches awaiting inspection.
+- Rejected batches.
+- Clean storage occupancy.
+- Pending department requests.
+- Outstanding collections.
+- Missing linen incidents.
+- Damaged linen.
+- Equipment downtime.
+- Consumable usage.
+- Daily processing volume.
+
+Create reports:
+
+1. Daily linen collection.
+2. Weekly linen collection.
+3. Monthly linen collection.
+4. Department linen usage.
+5. Department linen allocation.
+6. Linen circulation report.
+7. Clean linen stock report.
+8. Dirty linen backlog.
+9. Washing batch history.
+10. Processing parameter deviations.
+11. Quality inspection results.
+12. Reprocessing report.
+13. Linen distribution register.
+14. Linen return register.
+15. Lost linen report.
+16. Damaged linen report.
+17. Condemned linen report.
+18. Department discrepancy report.
+19. Equipment utilization.
+20. Equipment downtime.
+21. Consumables usage.
+22. Laundry operational cost.
+23. Staff productivity.
+24. Branch comparison.
+25. Laundry performance summary.
+
+All reports must enforce branch and role access.
+
+Support PDF and Excel exports using existing infrastructure.
+
+# 21. DATABASE DESIGN
+
+Inspect existing schema before creating migrations.
+
+Potential tables:
+
+- `laundry_linen_categories`
+- `laundry_linen_items`
+- `laundry_linen_identifiers`
+- `laundry_linen_movements`
+- `laundry_department_allocations`
+- `laundry_requests`
+- `laundry_request_items`
+- `laundry_collections`
+- `laundry_collection_items`
+- `laundry_sorting_records`
+- `laundry_processing_batches`
+- `laundry_processing_batch_items`
+- `laundry_processing_stages`
+- `laundry_stage_observations`
+- `laundry_quality_inspections`
+- `laundry_inspection_items`
+- `laundry_clean_storage_areas`
+- `laundry_storage_transactions`
+- `laundry_distributions`
+- `laundry_distribution_items`
+- `laundry_returns`
+- `laundry_return_items`
+- `laundry_linen_incidents`
+- `laundry_incident_actions`
+- `laundry_equipment_usage`
+- `laundry_consumable_usage`
+- `laundry_cost_references`
+- `laundry_number_sequences`
+
+These are proposed names. Adapt them to existing conventions and avoid duplicate functionality.
+
+Requirements:
+
+- Appropriate foreign keys.
+- Organization and branch references.
+- Unique constraints.
+- Indexed operational status and date fields.
+- Transaction-safe stock and circulation changes.
+- Immutable historical transactions.
+- Soft deletion only for appropriate configuration records.
+- No destructive deletion of operational history.
+
+Use database transactions for all critical state changes.
+
+# 22. SERVICE ARCHITECTURE
+
+Suggested services:
+
+- `LinenCatalogueService`
+- `LinenTrackingService`
+- `LinenRequestService`
+- `LinenCollectionService`
+- `LinenSortingService`
+- `LaundryProcessingService`
+- `LaundryQualityService`
+- `CleanStorageService`
+- `LinenDistributionService`
+- `LinenReturnService`
+- `LinenIncidentService`
+- `LaundryEquipmentIntegrationService`
+- `LaundryInventoryIntegrationService`
+- `LaundryFinanceIntegrationService`
+- `LaundryReportingService`
+
+Follow existing module coding conventions.
+
+Use:
+
+- Form Requests.
+- Policies.
+- Database transactions.
+- Events and listeners.
+- Queued jobs where appropriate.
+- Idempotency keys.
+- Structured service responses.
+
+Keep controllers thin.
+
+# 23. RBAC
+
+Register permissions through Foundation.
+
+Suggested permissions:
+
+- `laundry.dashboard.view`
+- `laundry.catalogue.view`
+- `laundry.catalogue.manage`
+- `laundry.linen.view`
+- `laundry.linen.manage`
+- `laundry.requests.create`
+- `laundry.requests.approve`
+- `laundry.collections.create`
+- `laundry.collections.receive`
+- `laundry.sorting.manage`
+- `laundry.processing.manage`
+- `laundry.processing.approve`
+- `laundry.quality.inspect`
+- `laundry.storage.view`
+- `laundry.storage.manage`
+- `laundry.distribution.create`
+- `laundry.distribution.approve`
+- `laundry.distribution.receive`
+- `laundry.returns.manage`
+- `laundry.incidents.report`
+- `laundry.incidents.investigate`
+- `laundry.incidents.close`
+- `laundry.equipment.view`
+- `laundry.reports.view`
+- `laundry.reports.export`
+- `laundry.settings.manage`
+
+Suggested role templates:
+
+- Laundry Administrator.
+- Laundry Supervisor.
+- Laundry Operator.
+- Collection Officer.
+- Sorting Officer.
+- Processing Officer.
+- Quality Inspector.
+- Linen Storekeeper.
+- Department Linen Coordinator.
+- Maintenance Officer.
+- Auditor.
+
+Roles must remain configurable through existing RBAC.
+
+Enforce branch scope and permission checks on the backend.
+
+# 24. USER INTERFACE
+
+Create a premium, clean and responsive hospital operations interface.
+
+Required screens:
+
+1. Laundry Dashboard.
+2. Linen Catalogue.
+3. Linen Item Details.
+4. Linen Allocation.
+5. Department Requests.
+6. Collection Requests.
+7. Collection Receiving.
+8. Sorting Station.
+9. Washing Batch Management.
+10. Processing Stage Details.
+11. Quality Inspection.
+12. Clean Linen Storage.
+13. Linen Distribution.
+14. Linen Returns.
+15. Lost and Damaged Linen.
+16. Equipment Usage.
+17. Consumables Usage.
+18. Laundry Reports.
+19. Configuration.
+
+Provide workflow-focused screens rather than overcrowded tables.
+
+Use:
+
+- Search and filters.
+- Pagination.
+- Clear status indicators.
+- Confirmation dialogs.
+- Quantity validation.
+- Empty states.
+- Print-friendly documents.
+- Responsive layouts.
+- Barcode/QR-ready interaction where supported.
+
+Do not make frontend controls appear functional when no backend operation exists.
+
+# 25. AUDIT AND DATA GOVERNANCE
+
+Use Foundation AuditLogService.
+
+Audit:
+
+- Catalogue changes.
+- Linen registration.
+- Department allocation.
+- Collection and receiving.
+- Sorting.
+- Processing stages.
+- Process deviations.
+- Quality inspection.
+- Clean storage transactions.
+- Distribution and acknowledgement.
+- Returns.
+- Lost and damaged reports.
+- Condemnation approvals.
+- Equipment usage.
+- Consumable issues.
+- Finance references.
+- Permission-sensitive actions.
+
+Do not edit or delete completed operational transactions.
+
+Corrections must create traceable correction records.
+
+# 26. TESTING REQUIREMENTS
+
+Write real automated tests.
+
+Minimum test areas:
+
+**Catalogue and tracking**
+
+- Unique linen identifiers.
+- Item classification.
+- Individual versus bulk tracking.
+- Status transitions.
+- Branch isolation.
+
+**Requests and collection**
+
+- Department request.
+- Approval and rejection.
+- Partial fulfilment.
+- Collection creation.
+- Collection receiving.
+- Quantity discrepancy.
+- Duplicate collection prevention.
+
+**Sorting and processing**
+
+- Valid sorting.
+- Special handling classification.
+- Batch creation.
+- Equipment validation.
+- Processing-stage completion.
+- Configured process parameter validation.
+- Failed processing handling.
+
+**Quality**
+
+- Accepted batch.
+- Partially accepted batch.
+- Rejected batch.
+- Reprocessing.
+- Prevent rejected items entering clean storage.
+
+**Storage and distribution**
+
+- Clean storage transfer.
+- Duplicate transfer prevention.
+- Available quantity validation.
+- Department distribution.
+- Partial receipt.
+- Return reconciliation.
+- Prevention of negative quantities.
+
+**Incidents**
+
+- Missing linen report.
+- Damage report.
+- Investigation.
+- Authorized condemnation.
+- Immutable incident history.
+
+**Integration**
+
+- Canonical Inventory consumption.
+- Equipment register integration.
+- Finance references.
+- HR employee references.
+- Branch permissions.
+- Audit logging.
+
+**Security**
+
+- RBAC.
+- Branch isolation.
+- IDOR prevention.
+- Unauthorized approval rejection.
+- Duplicate submission protection.
+
+**End-to-end workflow**
+
+Build a real persisted E2E test:
+
+1. Create a reusable linen item.
+2. Allocate an initial quantity to a department.
+3. Create a collection request.
+4. Collect and receive dirty linen.
+5. Record quantity and weight.
+6. Sort the collected linen.
+7. Create a processing batch.
+8. Record washing and approved processing stages.
+9. Complete drying and finishing.
+10. Perform quality inspection.
+11. Transfer accepted items into clean storage.
+12. Reject and isolate damaged items.
+13. Fulfil a department replenishment request.
+14. Confirm receipt by the department.
+15. Return used linen.
+16. Reconcile circulation balances.
+17. Verify all movement records.
+18. Verify audit events.
+19. Verify no duplicate inventory transactions.
+
+Run tests against the actual supported database engine for concurrency-sensitive operations.
+
+Do not claim tests passed unless executed.
+
+# 27. IMPLEMENTATION MILESTONES
+
+**M1 — Linen Foundation and Catalogue**
+
+- Dependency audit.
+- Module infrastructure.
+- Linen categories.
+- Item catalogue.
+- Identifiers.
+- Initial tracking.
+- RBAC and tests.
+
+**M2 — Department Requests and Collection**
+
+- Department requests.
+- Allocation.
+- Collection workflow.
+- Receiving.
+- Quantity reconciliation.
+- Tests.
+
+**M3 — Sorting and Laundry Processing**
+
+- Sorting.
+- Segregation.
+- Processing batches.
+- Stage tracking.
+- Equipment references.
+- Tests.
+
+**M4 — Quality Control and Clean Storage**
+
+- Quality inspection.
+- Reprocessing.
+- Clean storage.
+- Storage transactions.
+- Tests.
+
+**M5 — Distribution, Returns and Incidents**
+
+- Distribution.
+- Department acknowledgement.
+- Returns.
+- Lost and damaged linen.
+- Condemnation workflow.
+- Tests.
+
+**M6 — Inventory, Equipment and Finance Integration**
+
+- Consumables.
+- Equipment.
+- Maintenance.
+- Financial references.
+- Operational costs.
+- Tests.
+
+**M7 — Dashboard, Reporting and Final Acceptance Audit**
+
+- Dashboard completion.
+- Reports.
+- Integration verification.
+- Security tests.
+- E2E workflow.
+- Performance review.
+- Documentation.
+- Final audit.
+
+# 28. ACCEPTANCE CRITERIA
+
+Phase 14 can only be accepted when:
+
+1. Linen catalogue and tracking work correctly.
+2. Department allocation is traceable.
+3. Dirty collection and receiving work correctly.
+4. Segregation prevents unsafe workflow transitions.
+5. Processing stages are recorded.
+6. Quality inspection controls clean storage entry.
+7. Clean storage balances reconcile.
+8. Distribution and returns are traceable.
+9. Missing and damaged linen workflows work.
+10. Inventory consumables integration is correct.
+11. Equipment integration uses canonical equipment records.
+12. Finance integration does not duplicate accounting.
+13. Branch isolation and RBAC are verified.
+14. Audit records are complete.
+15. End-to-end tests pass.
+16. No unresolved Critical or High severity defects remain.
+17. Existing HMS modules continue working.
+
+# 29. REQUIRED DELIVERY REPORT
+
+For every milestone, report:
+
+- Actual implementation status.
+- Files created.
+- Files modified.
+- Migrations.
+- Routes.
+- Permissions.
+- Services.
+- UI screens.
+- Integrations.
+- Commands executed.
+- Test counts and assertion results.
+- Screenshots or UI evidence.
+- Known gaps.
+- Security findings.
+- Deployment instructions.
+
+At M7, issue one verdict:
+
+- ACCEPTED
+- CONDITIONALLY ACCEPTED
+- REJECTED
+
+Base the verdict on actual code, executed tests and integration evidence.
+
+# FINAL EXECUTION INSTRUCTION
+
+Begin by inspecting the repository and its actual dependencies.
+
+Do not assume previous phases are accepted. Do not duplicate canonical modules. Do not implement fictional integrations. Do not bypass hospital-approved infection-control procedures.
+
+Implement Phase 14 as a fully integrated, auditable and secure Laundry & Linen Management System that supports real hospital operations across all authorized branches.
+
+Acceptance gate: Phase 14 itahitaji M7 final audit yenye ushahidi wa tests, reconciliation ya linen, security na integrations kabla ya kuendelea na Phase 15.

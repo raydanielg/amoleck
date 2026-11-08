@@ -1,0 +1,2323 @@
+Tunaendelea na PHASE 12 — BLOOD BANK MANAGEMENT SYSTEM.
+
+Hii module itasimamia damu kuanzia usajili wa donors, blood collection, screening, blood grouping, component preparation, storage, stock management, crossmatching, reservation, mpaka blood issue na transfusion traceability.
+
+Itakuwa imeunganishwa na Laboratory, Inventory, Emergency, Theatre, ICU na Finance bila kutengeneza mifumo inayojirudia.
+
+# PHASE 12 — BLOOD BANK MANAGEMENT SYSTEM
+
+## Complete Implementation Master Prompt
+
+### 1. PROJECT OBJECTIVE
+
+Build a comprehensive, secure and production-grade Blood Bank Management System for the existing multi-branch Hospital Management System.
+
+The module must manage the complete blood lifecycle:
+
+1. Blood donor registration.
+2. Donor eligibility assessment documentation.
+3. Donor history and donation records.
+4. Blood collection scheduling.
+5. Blood collection documentation.
+6. Donation identification and traceability.
+7. Laboratory screening integration.
+8. Blood grouping and Rh typing.
+9. Blood component preparation.
+10. Component labelling.
+11. Blood storage and cold-chain monitoring.
+12. Blood inventory management.
+13. Expiry and quarantine management.
+14. Blood requests from clinical departments.
+15. Blood compatibility and crossmatch workflows.
+16. Blood reservation and allocation.
+17. Blood issue and dispatch.
+18. Blood transfusion traceability.
+19. Transfusion reaction documentation.
+20. Blood return and disposal management.
+21. Blood wastage monitoring.
+22. Blood stock reconciliation.
+23. Donor communication and follow-up.
+24. Blood Bank dashboards and reports.
+
+The module must provide end-to-end traceability from donor and donation through components, laboratory testing, storage, allocation, issue and final disposition.
+
+This is an operational Blood Bank management system, not a simple blood group registry or stock-counting application.
+
+All donor eligibility, laboratory screening, compatibility decisions, release decisions and transfusion decisions must remain under authorized professional control.
+
+The software must not independently determine donor eligibility, diagnose infection, declare blood compatible or authorize transfusion.
+
+---
+
+### 2. STRICT TECHNOLOGY STACK
+
+Preserve the existing HMS architecture.
+
+**Backend**
+
+- PHP.
+- Laravel.
+- Laravel Modular Monolith.
+- nwidart/laravel-modules.
+- Existing authentication and authorization.
+
+**Frontend**
+
+- Laravel Blade.
+- Tailwind CSS.
+- Minimal JavaScript.
+- Existing hospital UI design system.
+
+**Database**
+
+- Existing MySQL/MariaDB.
+- Relational schema.
+- Foreign keys.
+- Unique constraints.
+- Database transactions.
+- Concurrency-safe inventory and reservation workflows.
+
+**Architecture**
+
+- Domain-oriented services.
+- Thin controllers.
+- Form Requests.
+- Policies and Gates.
+- Central audit logging.
+- Existing notification infrastructure.
+- Private document storage.
+
+Do not introduce:
+
+- Next.js.
+- React.
+- Vue.
+- NestJS.
+- Microservices.
+- Separate databases.
+- Duplicate authentication systems.
+- Another inventory ledger.
+
+---
+
+### 3. MODULE LOCATION
+
+Primary module:
+
+`Modules/Inventory`
+
+Inspect the existing module structure before implementation.
+
+If a dedicated BloodBank or Transfusion module already exists, extend it rather than creating a duplicate.
+
+Organize the functionality into logical domains:
+
+- Donor Management.
+- Donation Management.
+- Donor Eligibility Documentation.
+- Collection Management.
+- Laboratory Screening Integration.
+- Blood Grouping.
+- Component Preparation.
+- Blood Labelling.
+- Storage Management.
+- Cold Chain Monitoring.
+- Blood Inventory.
+- Blood Requests.
+- Compatibility Testing.
+- Reservation and Allocation.
+- Blood Issue and Dispatch.
+- Transfusion Traceability.
+- Reaction and Incident Management.
+- Returns and Disposal.
+- Reconciliation and Reporting.
+
+The Blood Bank must have its own clinical and operational workflows while reusing canonical inventory and laboratory infrastructure.
+
+---
+
+### 4. MANDATORY DEPENDENCY AUDIT
+
+Before coding, inspect actual repository files, database migrations, models, services, routes, permissions, tests and existing integrations.
+
+Verify:
+
+**Foundation**
+
+- Hospital profile.
+- Branches.
+- User authentication.
+- RBAC.
+- Department registry.
+- Employee registry.
+- AuditLogService.
+- Settings.
+- Notifications.
+
+**PatientCare**
+
+- Canonical patient identity.
+- MRN.
+- Medical history.
+- Allergies.
+- Clinical documents.
+- Consent records where applicable.
+
+**HospitalOperations**
+
+- Departments.
+- Patient admissions.
+- ICU.
+- Emergency Department.
+- Nursing.
+- Medication orders.
+- eMAR.
+- Theatre and surgical operations.
+- Transfusion documentation references where present.
+
+**Diagnostics**
+
+- Laboratory test catalogue.
+- Laboratory orders.
+- Specimen collection.
+- Accession numbers.
+- Laboratory processing.
+- Technical verification.
+- Final result authorization.
+- Laboratory reports.
+
+**Inventory**
+
+- Canonical item catalogue.
+- Warehouses.
+- Storage locations.
+- Batch management.
+- Stock ledger.
+- Reservations.
+- Transfers.
+- Expiry management.
+- Reconciliation.
+
+**Finance**
+
+- Service pricing.
+- Charge capture.
+- Invoicing.
+- Payments.
+- Supplier and procurement infrastructure where relevant.
+
+**Administration**
+
+- Employees.
+- Professional assignments.
+- Department and branch assignments.
+
+Do not assume previous phases are accepted without actual implementation evidence.
+
+Where dependencies are incomplete, report the gap and establish a safe integration interface. Do not create duplicate patient, laboratory, stock, pharmacy or accounting systems.
+
+---
+
+### 5. BLOOD BANK CONFIGURATION
+
+Create configurable Blood Bank facilities.
+
+Support multiple blood bank facilities and storage locations across hospital branches.
+
+Each facility must contain:
+
+- Facility code.
+- Facility name.
+- Branch.
+- Department.
+- Location.
+- Responsible manager.
+- Responsible laboratory professional.
+- Contact details.
+- Operational status.
+- Operating hours.
+- Storage capacity.
+- Approved component categories.
+- Applicable operational policies.
+- Effective dates.
+
+Statuses:
+
+- Active.
+- Inactive.
+- Maintenance.
+- Temporarily Closed.
+- Pending Inspection.
+
+Support configured operational sections:
+
+- Donor registration.
+- Collection area.
+- Screening laboratory.
+- Component preparation.
+- Storage.
+- Issue and dispatch.
+- Quarantine.
+- Returned units.
+- Disposal.
+
+Do not assume all facilities have identical equipment or authorization scopes.
+
+---
+
+### 6. DONOR MANAGEMENT
+
+Build a secure donor registration and history system.
+
+Support donor categories:
+
+- Voluntary donor.
+- Replacement donor.
+- Directed donor.
+- Autologous donor where approved.
+- Other authorized categories.
+
+Each donor must receive a unique donor number.
+
+Example:
+
+`DON-2026-000001`
+
+Number generation must be concurrency-safe and never recycled.
+
+Capture configurable donor details:
+
+- Donor number.
+- Full name.
+- Date of birth where collected.
+- Contact details.
+- Preferred contact method.
+- Identification reference where required.
+- Donor category.
+- Registration date.
+- Branch.
+- Relevant consent records.
+- Donor communication preferences.
+- Registration status.
+
+Donor identity and medical information must be protected.
+
+Do not collect unnecessary personal data.
+
+### Donor status
+
+- Registered.
+- Pending Assessment.
+- Eligible for Assessment.
+- Temporarily Deferred.
+- Permanently Deferred.
+- Inactive.
+- Archived.
+
+Do not automatically determine donor eligibility.
+
+The authorized donor assessment process must establish eligibility according to approved clinical and regulatory policy.
+
+### Donor history
+
+Provide:
+
+- Previous donations.
+- Donation dates.
+- Collection records.
+- Relevant screening outcomes.
+- Documented deferrals.
+- Donor follow-up records.
+- Consent history.
+- Communication history.
+
+Restrict access to sensitive donor information.
+
+A donor must not be automatically approved for donation simply because they previously donated.
+
+---
+
+### 7. DONOR ELIGIBILITY ASSESSMENT
+
+Implement a configurable donor assessment workflow.
+
+Capture:
+
+- Donor.
+- Assessment date and time.
+- Assessing professional.
+- Branch.
+- Donation context.
+- Relevant medical history.
+- Relevant screening questionnaire responses.
+- Examination references where applicable.
+- Assessment notes.
+- Decision.
+- Deferral reason.
+- Review date where applicable.
+- Supporting documents.
+
+Possible outcomes:
+
+- Pending Assessment.
+- Accepted for Collection.
+- Temporarily Deferred.
+- Permanently Deferred.
+- Requires Further Review.
+
+Requirements:
+
+- Use approved donor assessment forms.
+- Form versions must be preserved.
+- Do not hardcode universal eligibility criteria.
+- Do not invent donor age, weight, haemoglobin or interval thresholds.
+- Clinical leadership must configure approved criteria and effective dates.
+- Where required clinical information is missing, the software must not infer eligibility.
+- Only authorized professionals can finalize an assessment.
+- Preserve the decision and its responsible professional.
+- Support reassessment after a documented deferral where policy permits.
+
+---
+
+### 8. DONOR CONSENT MANAGEMENT
+
+Support consent documentation for:
+
+- Donor registration.
+- Blood collection.
+- Relevant screening procedures.
+- Authorized follow-up communication.
+- Other approved donor processes.
+
+Capture:
+
+- Donor.
+- Consent type.
+- Consent template version.
+- Explanation documented.
+- Consent decision.
+- Date and time.
+- Responsible staff.
+- Witness where required.
+- Supporting document.
+- Withdrawal history.
+
+Consent statuses:
+
+- Pending.
+- Consented.
+- Declined.
+- Withdrawn.
+- Requires Reconfirmation.
+
+Requirements:
+
+- Do not treat registration as consent to donate.
+- Do not treat previous consent as unlimited future consent.
+- Preserve withdrawal history.
+- Restrict consent documents.
+- Follow approved legal and institutional requirements.
+- Do not create blanket consent bypasses.
+
+---
+
+### 9. BLOOD DONATION SCHEDULING
+
+Implement donation appointment scheduling where the hospital uses scheduled donation sessions.
+
+Capture:
+
+- Donor.
+- Branch.
+- Collection facility.
+- Date.
+- Time.
+- Collection session.
+- Expected donation type.
+- Assigned staff.
+- Appointment status.
+- Notes.
+
+Statuses:
+
+- Requested.
+- Confirmed.
+- Checked In.
+- Assessment Pending.
+- Ready for Collection.
+- Completed.
+- Cancelled.
+- No Show.
+
+Support walk-in donors without creating fake appointments.
+
+Reuse existing appointment infrastructure where practical, but keep donor appointments distinct from patient clinical appointments.
+
+Prevent conflicting appointments for the same donor and collection session where applicable.
+
+---
+
+### 10. BLOOD COLLECTION MANAGEMENT
+
+Build a controlled collection workflow.
+
+Each donation must have a unique donation number.
+
+Example:
+
+`DONAT-2026-000001`
+
+Each collection must reference:
+
+- Donor.
+- Donor assessment.
+- Consent.
+- Collection facility.
+- Branch.
+- Collection staff.
+- Donation date and time.
+- Donation category.
+- Collection method.
+- Collection bag reference.
+- Collection volume as documented.
+- Collection equipment reference where available.
+- Relevant notes.
+
+Collection statuses:
+
+- Pending.
+- In Progress.
+- Collected.
+- Collection Completed.
+- Collection Interrupted.
+- Rejected.
+- Cancelled.
+
+Capture:
+
+- Collection start.
+- Collection completion.
+- Actual collection volume.
+- Collection outcome.
+- Relevant donor observations.
+- Adverse events.
+- Responsible professional.
+- Supporting documentation.
+
+Requirements:
+
+- Only authorized professionals may record completed collections.
+- Collection must reference an eligible assessment and required consent.
+- Any approved exception must be explicitly documented.
+- Do not invent collection volumes or procedures.
+- Do not treat a scheduled donation as collected blood.
+- Preserve all collection events.
+- Failed or interrupted collections must be traceable.
+
+---
+
+### 11. BLOOD DONATION IDENTIFICATION AND TRACEABILITY
+
+Implement unique donation and blood-unit identification.
+
+Each collected donation must have a unique identifier.
+
+Each derived blood component must have its own unique component identifier while preserving parent donation lineage.
+
+Support:
+
+- Human-readable identifiers.
+- Barcode.
+- QR code.
+- Machine-readable labels.
+- Label reprinting with audit.
+- Label verification.
+- Parent donation reference.
+- Component lineage.
+
+A blood component label must not expose unnecessary donor personal information.
+
+Prevent duplicate identifiers.
+
+Support scan-based retrieval where appropriate.
+
+Do not allow a scanned label to bypass authorization.
+
+All identifiers must be unique across the relevant organization or approved numbering scope.
+
+---
+
+### 12. LABORATORY SCREENING INTEGRATION
+
+Integrate with the existing Diagnostics module.
+
+The Blood Bank must reuse canonical laboratory services for:
+
+- Laboratory orders.
+- Specimen registration.
+- Specimen tracking.
+- Test processing.
+- Result entry.
+- Technical verification.
+- Final result authorization.
+- Diagnostic report storage.
+
+Support configurable screening test requirements under approved policy.
+
+Examples may include:
+
+- HIV screening.
+- Hepatitis B screening.
+- Hepatitis C screening.
+- Syphilis screening.
+- Other locally approved screening requirements.
+
+Important:
+
+- Do not invent screening panels.
+- Do not hardcode medical or regulatory requirements.
+- Do not invent test interpretation rules.
+- Use the actual configured diagnostic test catalogue.
+- Link each result to the correct donation.
+- Preserve test and reference versions.
+- Only authorized laboratory professionals can verify and authorize results.
+- Do not release blood products for use when mandatory screening is incomplete or unresolved according to approved policy.
+- An abnormal or reactive result must follow the approved confirmatory and disposition workflow.
+- Do not automatically diagnose a donor based on a screening result.
+
+### Screening statuses
+
+- Not Requested.
+- Pending Collection.
+- Processing.
+- Pending Verification.
+- Pending Authorization.
+- Authorized.
+- Rejected.
+- Incomplete.
+- Requires Further Review.
+
+A completed screening test is not necessarily an authorized release decision.
+
+---
+
+### 13. BLOOD GROUPING AND RH TYPING
+
+Provide structured blood grouping documentation.
+
+Support:
+
+- ABO group.
+- RhD status.
+- Other configured blood group antigen results where available.
+- Testing method.
+- Specimen reference.
+- Laboratory professional.
+- Result timestamp.
+- Verification status.
+- Authorization status.
+
+Possible ABO values:
+
+- A.
+- B.
+- AB.
+- O.
+- Unknown.
+- Pending.
+
+Possible RhD values:
+
+- Positive.
+- Negative.
+- Unknown.
+- Pending.
+
+Requirements:
+
+- Store the original laboratory result.
+- Preserve test methodology and verification history.
+- Support discrepancy investigation.
+- Do not infer a blood group from donor history or patient records.
+- Do not use an unverified historical result as the sole basis for release or compatibility decisions.
+- Reuse Diagnostics result records where possible.
+
+---
+
+### 14. BLOOD COMPONENT PREPARATION
+
+Implement blood component processing and lineage.
+
+Support configurable component categories such as:
+
+- Whole Blood.
+- Packed Red Blood Cells.
+- Platelet Components.
+- Fresh Frozen Plasma.
+- Cryoprecipitate.
+- Other authorized components.
+
+The exact available component types must be configurable according to actual facility capability and approved policy.
+
+Each component must reference:
+
+- Parent donation.
+- Component type.
+- Component identifier.
+- Preparation facility.
+- Preparation date and time.
+- Preparation professional.
+- Processing method reference.
+- Volume where documented.
+- Anticoagulant or additive information where applicable.
+- Storage requirement reference.
+- Expiry calculation source.
+- Quality status.
+- Release status.
+
+Component statuses:
+
+- Pending Preparation.
+- Processing.
+- Prepared.
+- Pending Quality Review.
+- Quarantined.
+- Released.
+- Rejected.
+- Expired.
+- Recalled.
+- Disposed.
+
+Requirements:
+
+- One donation may generate multiple components.
+- Every component must retain parent donation lineage.
+- A component must not be released merely because preparation is complete.
+- Do not invent processing procedures or shelf-life rules.
+- Component expiry must derive from an approved configurable policy.
+- Preserve component history.
+- Prevent duplicate component creation for the same processing event.
+
+---
+
+### 15. BLOOD COMPONENT QUALITY CONTROL
+
+Implement configurable quality-control documentation.
+
+Capture:
+
+- Component.
+- QC type.
+- Test or inspection reference.
+- Sampling date.
+- Result.
+- Approved acceptance criteria reference.
+- Responsible professional.
+- Review decision.
+- Corrective action.
+- Supporting documents.
+
+QC statuses:
+
+- Pending.
+- In Progress.
+- Passed.
+- Failed.
+- Requires Review.
+- Not Applicable with justification.
+
+Requirements:
+
+- QC limits must be configured from approved sources.
+- Do not invent universal acceptance limits.
+- Failed mandatory QC must block release where policy requires.
+- Preserve QC history.
+- Record corrective actions.
+- Do not silently convert failed QC into passed status.
+
+---
+
+### 16. BLOOD STORAGE AND COLD CHAIN MANAGEMENT
+
+Build configurable blood storage management.
+
+Support storage facilities such as:
+
+- Blood refrigerators.
+- Freezers.
+- Platelet storage equipment.
+- Controlled-temperature storage.
+- Quarantine storage.
+- Other approved facilities.
+
+Each storage unit must reference canonical Inventory equipment where available.
+
+Capture:
+
+- Storage unit ID.
+- Branch.
+- Facility.
+- Equipment reference.
+- Storage category.
+- Capacity.
+- Approved temperature policy reference.
+- Operational status.
+- Inspection status.
+- Maintenance status.
+- Monitoring method.
+- Responsible staff.
+
+### Storage assignment
+
+Every released or quarantined component must have a traceable storage location.
+
+Capture:
+
+- Component.
+- Storage unit.
+- Storage position.
+- Assignment date and time.
+- Responsible employee.
+- Storage status.
+- Transfer history.
+
+Prevent allocation to unsuitable or unavailable storage.
+
+### Temperature monitoring
+
+Support:
+
+- Manual temperature entry.
+- Automated monitoring adapter where actual equipment integration exists.
+- Temperature history.
+- Monitoring timestamps.
+- Recorded units.
+- Responsible staff.
+- Excursion events.
+- Review and corrective action.
+
+Temperature rules must be configurable by component and storage category using approved policy.
+
+Do not hardcode universal storage temperatures.
+
+### Cold chain alerts
+
+Support configurable alerts for:
+
+- Temperature excursion.
+- Monitoring overdue.
+- Storage equipment failure.
+- Power interruption.
+- Door or access incident where integrated.
+- Equipment maintenance.
+- Storage capacity warning.
+
+A temperature excursion must create a review or quarantine workflow where policy requires.
+
+Do not automatically release an affected component after temperature returns to normal.
+
+---
+
+### 17. BLOOD INVENTORY MANAGEMENT
+
+Integrate with canonical Inventory stock and batch services.
+
+Blood components must be tracked as controlled, individually identifiable inventory units.
+
+Do not treat blood products as ordinary interchangeable bulk quantities.
+
+Each unit must retain:
+
+- Component identifier.
+- Parent donation.
+- Blood group.
+- RhD.
+- Component type.
+- Collection date.
+- Preparation date.
+- Expiry date.
+- Storage requirement.
+- Current location.
+- Quality status.
+- Screening status.
+- Release status.
+- Reservation status.
+- Allocation status.
+- Issue status.
+- Disposition status.
+
+Inventory availability must exclude:
+
+- Quarantined units.
+- Rejected units.
+- Expired units.
+- Recalled units.
+- Damaged units.
+- Units with unresolved temperature excursions.
+- Units under investigation.
+- Units already issued.
+- Units reserved for another valid request.
+
+Support stock states:
+
+- Collected.
+- Processing.
+- Quarantined.
+- Released.
+- Available.
+- Reserved.
+- Allocated.
+- Issued.
+- Returned.
+- Expired.
+- Recalled.
+- Disposed.
+
+Requirements:
+
+- Use canonical Inventory ledger for physical movements where applicable.
+- Extend the existing item and stock model for unique blood-unit identity if necessary.
+- Do not directly edit stock balances.
+- Preserve unit-level traceability.
+- Prevent duplicate stock issue.
+- Support reconciliation.
+- Use transactions and concurrency-safe reservation.
+- Distinguish a reservation from a physical issue.
+- Never count an issued unit as available.
+
+---
+
+### 18. PATIENT BLOOD REQUEST MANAGEMENT
+
+Build a structured blood request workflow for authorized clinical departments.
+
+Support requests from:
+
+- Emergency Department.
+- ICU.
+- Operating Theatre.
+- Surgical Ward.
+- General Ward.
+- Obstetrics.
+- Other approved departments.
+
+Each request must contain:
+
+- Unique request number.
+- Canonical patient.
+- MRN.
+- Branch.
+- Inpatient admission or clinical encounter.
+- Requesting department.
+- Requesting clinician.
+- Responsible consultant where applicable.
+- Requested component type.
+- Number of units.
+- Required date and time.
+- Clinical indication.
+- Priority.
+- Relevant blood group information.
+- Relevant transfusion history.
+- Relevant investigation references.
+- Special requirements as documented.
+- Supporting documents.
+
+Request priority:
+
+- Emergency.
+- Urgent.
+- Routine.
+- Planned.
+
+Priority must be set by an authorized clinician.
+
+Do not generate automatic transfusion recommendations.
+
+### Request workflow
+
+- Draft.
+- Submitted.
+- Pending Review.
+- Approved.
+- Rejected.
+- Clarification Required.
+- Awaiting Compatibility Testing.
+- Awaiting Allocation.
+- Partially Allocated.
+- Fully Allocated.
+- Partially Issued.
+- Issued.
+- Completed.
+- Cancelled.
+
+Requirements:
+
+- Unique concurrency-safe numbering.
+- Multiple components per request where permitted.
+- Partial fulfillment.
+- Shortage tracking.
+- Cancellation and modification history.
+- Prevent duplicate request processing.
+- Do not automatically approve requests.
+- Preserve the original clinical indication.
+
+---
+
+### 19. BLOOD COMPATIBILITY AND CROSSMATCH MANAGEMENT
+
+Implement a structured compatibility testing workflow.
+
+The module must support references to:
+
+- Patient blood grouping.
+- Historical verified grouping.
+- Current specimen.
+- Current laboratory results.
+- Requested component.
+- Donor component grouping.
+- Crossmatch order.
+- Compatibility testing.
+- Final laboratory verification.
+
+Each compatibility record must include:
+
+- Patient.
+- Blood request.
+- Component unit.
+- Patient specimen.
+- Laboratory order or test reference.
+- Testing method.
+- Result.
+- Testing date and time.
+- Performing professional.
+- Verifying professional.
+- Authorization status.
+- Comments.
+
+Possible results:
+
+- Pending.
+- Compatible.
+- Incompatible.
+- Invalid.
+- Inconclusive.
+- Requires Repeat Testing.
+- Not Required under an approved documented protocol.
+
+Requirements:
+
+- Reuse Diagnostics laboratory order and result infrastructure.
+- Do not create a duplicate laboratory engine.
+- Do not invent compatibility rules.
+- Do not infer compatibility from ABO/Rh alone.
+- Do not use unverified historical blood grouping as automatic authorization.
+- Compatibility must be established through an approved laboratory workflow.
+- Only authorized professionals may authorize results.
+- Incompatible or unresolved components must not be released through ordinary workflows.
+- Emergency release exceptions must follow an explicitly approved, documented policy with responsible authorization.
+- Preserve the complete test and approval history.
+
+---
+
+### 20. BLOOD RESERVATION AND ALLOCATION
+
+Implement unit-level reservation and allocation.
+
+The allocation engine must consider configured criteria:
+
+- Component type.
+- Verified blood group.
+- RhD.
+- Compatibility result.
+- Expiry.
+- Storage status.
+- Quality status.
+- Screening status.
+- Release status.
+- Special requirements.
+- Existing reservations.
+- Branch availability.
+- Approved clinical policy.
+
+Support FEFO where appropriate, but compatibility and clinical policy take precedence.
+
+Do not automatically select a unit solely because it expires first.
+
+### Reservation workflow
+
+- Pending.
+- Reserved.
+- Allocated.
+- Partially Allocated.
+- Released.
+- Expired.
+- Cancelled.
+
+Capture:
+
+- Blood request.
+- Component unit.
+- Reservation timestamp.
+- Reservation expiry where configured.
+- Responsible employee.
+- Approval.
+- Release reason.
+- Allocation history.
+
+Requirements:
+
+- Prevent two requests from reserving the same unit.
+- Use transactions and database locking.
+- Revalidate component eligibility immediately before issue.
+- Prevent allocation of quarantined or incompatible units.
+- Preserve reservation history.
+- Release unused reservations through authorized workflows.
+
+---
+
+### 21. BLOOD ISSUE AND DISPATCH
+
+Implement controlled blood component issue.
+
+Capture:
+
+- Blood request.
+- Patient.
+- Component.
+- Unit identifier.
+- Compatibility reference.
+- Issue date and time.
+- Issuing professional.
+- Receiving department.
+- Receiving professional.
+- Dispatch method.
+- Storage condition at issue.
+- Transport requirements reference.
+- Verification.
+- Acknowledgement.
+
+Issue statuses:
+
+- Pending Issue.
+- Verified.
+- Issued.
+- Dispatched.
+- Received.
+- Rejected on Receipt.
+- Returned.
+- Cancelled.
+
+Requirements:
+
+- Revalidate release, expiry, compatibility and quarantine status before issue.
+- Verify patient and request identity.
+- Prevent duplicate issue.
+- Record receiving acknowledgement.
+- Record transport and handover history.
+- Stock must be deducted exactly once.
+- A reservation is not an issue.
+- A dispatched unit is not automatically transfused.
+- A generated issue slip is not proof of transfusion.
+
+Provide secure issue labels and printable issue documentation.
+
+---
+
+### 22. BLOOD TRANSFUSION TRACEABILITY
+
+Integrate with HospitalOperations Nursing and eMAR where appropriate.
+
+Create a transfusion documentation workflow that references the actual blood unit and issue event.
+
+Capture:
+
+- Patient.
+- MRN.
+- ICU stay or inpatient admission where applicable.
+- Blood request.
+- Blood unit.
+- Component type.
+- Compatibility reference.
+- Responsible clinician.
+- Administering professional.
+- Start date and time.
+- Completion date and time.
+- Actual administration status.
+- Relevant observations.
+- Patient response.
+- Adverse events.
+- Transfusion record.
+
+Statuses:
+
+- Not Started.
+- Started.
+- In Progress.
+- Completed.
+- Stopped.
+- Interrupted.
+- Not Administered.
+- Cancelled.
+
+Requirements:
+
+- Do not equate blood issue with transfusion.
+- Record actual administration separately.
+- Integrate with nursing documentation.
+- Preserve responsible staff and timestamps.
+- Do not invent transfusion observation schedules or thresholds.
+- Use approved clinical policies for mandatory monitoring.
+- Prevent duplicate transfusion completion records.
+- Preserve partial transfusion and stopped transfusion documentation.
+- Do not automatically issue a replacement unit after an interrupted transfusion.
+
+---
+
+### 23. TRANSFUSION REACTION AND INCIDENT MANAGEMENT
+
+Build a structured transfusion reaction and incident workflow.
+
+Capture:
+
+- Patient.
+- Blood unit.
+- Transfusion record.
+- Event date and time.
+- Reported symptoms or observations.
+- Responsible clinician.
+- Immediate documented actions.
+- Transfusion status.
+- Related laboratory investigations.
+- Blood unit status.
+- Clinical escalation.
+- Incident reference.
+- Follow-up.
+- Outcome documentation.
+
+Possible categories must be configurable by authorized clinical leadership.
+
+Workflow:
+
+- Reported.
+- Under Clinical Review.
+- Investigation Pending.
+- Laboratory Review.
+- Under Investigation.
+- Resolved.
+- Closed.
+
+Requirements:
+
+- Do not automatically diagnose reaction type.
+- Do not invent management protocols.
+- Preserve original clinical records.
+- Support unit quarantine and related investigation where policy requires.
+- Link affected donation and component lineage.
+- Support trace-back and trace-forward investigations.
+- Restrict access to sensitive incident records.
+- Ensure an incident cannot silently disappear after closure.
+
+---
+
+### 24. BLOOD RETURN MANAGEMENT
+
+Support blood component returns from wards, ICU, theatre and other departments.
+
+Capture:
+
+- Blood issue reference.
+- Component unit.
+- Patient.
+- Returning department.
+- Returning professional.
+- Return date and time.
+- Storage and transport history.
+- Condition on return.
+- Temperature evidence where required.
+- Return reason.
+- Inspection decision.
+- Final disposition.
+
+Return statuses:
+
+- Return Requested.
+- Received.
+- Under Inspection.
+- Quarantined.
+- Accepted for Further Review.
+- Rejected.
+- Disposed.
+- Closed.
+
+Requirements:
+
+- Returned blood must not automatically become available.
+- An authorized professional must assess the unit under approved policy.
+- Any required temperature and transport evidence must be captured.
+- Rejected or uncertain units must remain quarantined.
+- Re-entry into available inventory requires explicit authorization.
+- Preserve the original issue record and all return movements.
+
+---
+
+### 25. EXPIRY, RECALL AND DISPOSAL MANAGEMENT
+
+Implement controlled lifecycle management.
+
+Support:
+
+- Near-expiry alerts.
+- Expired component identification.
+- Donor-related recall.
+- Screening-related recall.
+- Quality-control recall.
+- Storage excursion quarantine.
+- Component damage.
+- Disposal authorization.
+- Disposal confirmation.
+
+Every disposal record must contain:
+
+- Component unit.
+- Reason.
+- Date and time.
+- Responsible professional.
+- Approval.
+- Disposal method reference.
+- Supporting evidence.
+- Stock movement reference.
+- Audit history.
+
+Requirements:
+
+- Expired components cannot be issued.
+- Recalled components cannot be issued.
+- Quarantined components cannot be issued through ordinary workflows.
+- Disposal must generate an authorized stock movement.
+- Do not silently delete expired or disposed units.
+- Preserve donation and component lineage after disposal.
+
+---
+
+### 26. BLOOD STOCK TRANSFER BETWEEN FACILITIES
+
+Support controlled transfers between authorized blood storage facilities.
+
+Capture:
+
+- Origin facility.
+- Destination facility.
+- Component units.
+- Reason.
+- Approving professional.
+- Dispatch employee.
+- Transport details.
+- Storage conditions.
+- Dispatch timestamp.
+- Receiving employee.
+- Receipt timestamp.
+- Condition on arrival.
+
+Transfer statuses:
+
+- Draft.
+- Pending Approval.
+- Approved.
+- Ready for Dispatch.
+- Dispatched.
+- In Transit.
+- Received.
+- Partially Received.
+- Discrepancy.
+- Rejected.
+- Cancelled.
+
+Requirements:
+
+- Prevent duplicate unit transfer.
+- Units in transit must not appear as freely available at either location.
+- Destination availability begins only after authorized receipt.
+- Record discrepancies.
+- Preserve custody history.
+- Enforce branch permissions.
+- Use transactional inventory movements.
+
+---
+
+### 27. DONOR FOLLOW-UP AND COMMUNICATION
+
+Support configurable donor follow-up workflows.
+
+Examples:
+
+- Post-donation follow-up.
+- Appointment reminders.
+- Donation history acknowledgement.
+- Required reassessment reminders.
+- Documented adverse-event follow-up.
+- Donor communication preferences.
+
+Requirements:
+
+- Use consent and communication preferences.
+- Restrict sensitive donor information.
+- Reuse the existing notification system.
+- Track attempts separately from confirmed delivery.
+- Do not disclose sensitive test results through insecure messages.
+- Do not automatically invite deferred donors to donate again.
+- Do not provide automated medical advice.
+
+---
+
+### 28. DASHBOARD AND BLOOD BANK OPERATIONS
+
+Build a professional Blood Bank dashboard.
+
+**Donor overview**
+
+- Registered donors.
+- New donors.
+- Scheduled donation appointments.
+- Completed donations.
+- Deferred donors.
+- Pending donor assessments.
+
+**Collection**
+
+- Donations today.
+- Pending collections.
+- Interrupted collections.
+- Completed collections.
+- Pending laboratory screening.
+
+**Component inventory**
+
+- Available units.
+- Reserved units.
+- Allocated units.
+- Issued units.
+- Quarantined units.
+- Near-expiry units.
+- Expired units.
+- Recalled units.
+- Disposed units.
+
+**Component breakdown**
+
+- By component type.
+- By ABO group.
+- By RhD.
+- By branch.
+- By storage location.
+
+**Requests**
+
+- Pending requests.
+- Emergency requests.
+- Awaiting crossmatch.
+- Awaiting allocation.
+- Partially fulfilled.
+- Unfulfilled requests.
+
+**Quality and cold chain**
+
+- Pending QC.
+- Failed QC.
+- Temperature excursions.
+- Storage equipment alerts.
+- Pending inspections.
+
+**Transfusion**
+
+- Units issued.
+- Units received.
+- Transfusions started.
+- Completed transfusions.
+- Interrupted transfusions.
+- Reaction incidents.
+
+All metrics must come from actual persisted records.
+
+Do not use fake sample data in production dashboards.
+
+---
+
+### 29. REPORTING AND ANALYTICS
+
+Build reports:
+
+1. Donor registry.
+2. Donor donation history.
+3. Donor eligibility and deferral report.
+4. Donation collection report.
+5. Collection staff activity.
+6. Screening status report.
+7. Blood group distribution.
+8. Component production report.
+9. Component quality-control report.
+10. Available blood inventory.
+11. Inventory by blood group.
+12. Inventory by component.
+13. Near-expiry report.
+14. Expired component report.
+15. Quarantine report.
+16. Temperature excursion report.
+17. Blood requests report.
+18. Crossmatch report.
+19. Blood allocation report.
+20. Blood issue report.
+21. Blood return report.
+22. Blood wastage report.
+23. Blood transfer report.
+24. Transfusion activity report.
+25. Transfusion reaction report.
+26. Donor traceability report.
+27. Component traceability report.
+28. Stock reconciliation report.
+29. Blood Bank performance report.
+30. Branch comparison report.
+
+Support:
+
+- Date range.
+- Branch.
+- Blood group.
+- RhD.
+- Component type.
+- Storage facility.
+- Status.
+- Department.
+- Request priority.
+
+Export to PDF and Excel.
+
+Reports must use authoritative source data and preserve privacy.
+
+---
+
+### 30. DATABASE DESIGN
+
+Inspect existing tables before creating new ones.
+
+Suggested tables:
+
+**Facility configuration**
+
+- `blood_bank_facilities`
+- `blood_bank_facility_status_history`
+- `blood_bank_storage_configurations`
+
+**Donors**
+
+- `blood_donors`
+- `blood_donor_status_history`
+- `blood_donor_assessments`
+- `blood_donor_assessment_versions`
+- `blood_donor_consents`
+- `blood_donor_consent_versions`
+- `blood_donor_appointments`
+- `blood_donor_communication_logs`
+
+**Collection**
+
+- `blood_donations`
+- `blood_donation_status_history`
+- `blood_collection_records`
+- `blood_collection_incidents`
+- `blood_collection_identifiers`
+
+**Screening and grouping**
+
+- Reuse Diagnostics orders, specimens, tests and results.
+- `blood_donation_screening_links`
+- `blood_group_verifications`
+- `blood_group_discrepancy_records`
+
+**Components**
+
+- `blood_components`
+- `blood_component_lineage`
+- `blood_component_processing_records`
+- `blood_component_status_history`
+- `blood_component_qc_records`
+- `blood_component_qc_actions`
+
+**Storage**
+
+- `blood_storage_units`
+- `blood_storage_locations`
+- `blood_storage_assignments`
+- `blood_storage_temperature_records`
+- `blood_storage_excursions`
+- `blood_storage_inspections`
+
+**Requests and compatibility**
+
+- `blood_requests`
+- `blood_request_items`
+- `blood_request_status_history`
+- `blood_compatibility_orders`
+- `blood_compatibility_results`
+- `blood_compatibility_authorizations`
+
+**Allocation and issue**
+
+- `blood_unit_reservations`
+- `blood_unit_allocations`
+- `blood_issue_records`
+- `blood_issue_acknowledgements`
+- `blood_dispatch_records`
+
+**Transfusion**
+
+- `blood_transfusion_records`
+- `blood_transfusion_observations`
+- `blood_transfusion_reactions`
+- `blood_transfusion_reaction_history`
+
+**Returns and disposal**
+
+- `blood_return_records`
+- `blood_return_inspections`
+- `blood_component_recalls`
+- `blood_component_disposals`
+
+**Transfers**
+
+- `blood_facility_transfers`
+- `blood_facility_transfer_items`
+- `blood_facility_transfer_history`
+
+**Traceability and audit**
+
+- `blood_traceability_events`
+- `blood_bank_document_references`
+
+These are proposed names, not mandatory duplicates.
+
+Use canonical tables and services wherever possible.
+
+All records must have appropriate foreign keys, indexes, unique constraints, timestamps, branch references and version references.
+
+Do not use a single JSON field as the only source of important clinical, laboratory or inventory data.
+
+---
+
+### 31. REQUIRED SERVICE ARCHITECTURE
+
+Implement services such as:
+
+**Configuration**
+
+- `BloodBankFacilityService`
+- `BloodBankConfigurationService`
+
+**Donor**
+
+- `BloodDonorService`
+- `BloodDonorNumberService`
+- `BloodDonorAssessmentService`
+- `BloodDonorConsentService`
+- `BloodDonorAppointmentService`
+
+**Collection**
+
+- `BloodDonationService`
+- `BloodDonationNumberService`
+- `BloodCollectionService`
+- `BloodUnitIdentifierService`
+
+**Laboratory**
+
+- `BloodScreeningIntegrationService`
+- `BloodGroupingService`
+- `BloodCompatibilityService`
+- `BloodLaboratoryAuthorizationService`
+
+**Components**
+
+- `BloodComponentPreparationService`
+- `BloodComponentLineageService`
+- `BloodComponentQualityControlService`
+
+**Storage**
+
+- `BloodStorageService`
+- `BloodStorageAssignmentService`
+- `BloodTemperatureMonitoringService`
+- `BloodColdChainAlertService`
+
+**Inventory**
+
+- `BloodInventoryService`
+- `BloodReservationService`
+- `BloodAllocationService`
+- `BloodIssueService`
+- `BloodReturnService`
+- `BloodDisposalService`
+- `BloodTransferService`
+- `BloodStockReconciliationService`
+
+**Clinical**
+
+- `BloodRequestService`
+- `BloodRequestApprovalService`
+- `BloodTransfusionService`
+- `BloodTransfusionReactionService`
+
+**Traceability**
+
+- `BloodTraceabilityService`
+- `BloodRecallService`
+
+**Integration**
+
+- `BloodDiagnosticsIntegrationService`
+- `BloodInventoryIntegrationService`
+- `BloodEmergencyIntegrationService`
+- `BloodIcuIntegrationService`
+- `BloodTheatreIntegrationService`
+- `BloodNursingIntegrationService`
+- `BloodFinanceIntegrationService`
+
+**Reporting**
+
+- `BloodBankDashboardService`
+- `BloodBankAnalyticsService`
+- `BloodBankReportService`
+
+Use thin controllers and centralized business logic.
+
+---
+
+### 32. RBAC AND PERMISSIONS
+
+Register granular permissions through Foundation.
+
+**Donors**
+
+- `bloodbank.donors.view`
+- `bloodbank.donors.create`
+- `bloodbank.donors.update`
+- `bloodbank.donors.manage`
+- `bloodbank.donors.view_sensitive`
+- `bloodbank.donors.assess`
+- `bloodbank.donors.approve`
+- `bloodbank.donors.defer`
+
+**Donations**
+
+- `bloodbank.donations.view`
+- `bloodbank.donations.create`
+- `bloodbank.donations.collect`
+- `bloodbank.donations.verify`
+- `bloodbank.donations.cancel`
+
+**Laboratory**
+
+- `bloodbank.screening.view`
+- `bloodbank.screening.manage`
+- `bloodbank.grouping.view`
+- `bloodbank.grouping.verify`
+- `bloodbank.compatibility.manage`
+- `bloodbank.compatibility.authorize`
+
+**Components**
+
+- `bloodbank.components.view`
+- `bloodbank.components.prepare`
+- `bloodbank.components.verify`
+- `bloodbank.components.release`
+- `bloodbank.components.quarantine`
+- `bloodbank.components.recall`
+
+**Storage**
+
+- `bloodbank.storage.view`
+- `bloodbank.storage.manage`
+- `bloodbank.storage.temperature.record`
+- `bloodbank.storage.excursions.manage`
+
+**Requests and issue**
+
+- `bloodbank.requests.view`
+- `bloodbank.requests.create`
+- `bloodbank.requests.review`
+- `bloodbank.requests.approve`
+- `bloodbank.units.reserve`
+- `bloodbank.units.allocate`
+- `bloodbank.units.issue`
+- `bloodbank.units.dispatch`
+- `bloodbank.units.acknowledge`
+
+**Transfusion**
+
+- `bloodbank.transfusion.view`
+- `bloodbank.transfusion.document`
+- `bloodbank.transfusion.complete`
+- `bloodbank.reactions.report`
+- `bloodbank.reactions.review`
+
+**Administration**
+
+- `bloodbank.returns.manage`
+- `bloodbank.disposal.approve`
+- `bloodbank.transfers.manage`
+- `bloodbank.reports.view`
+- `bloodbank.reports.export`
+- `bloodbank.configuration.manage`
+
+Enforce professional scope, branch scope, facility scope and separation of duties.
+
+Do not give unrestricted access to donor medical records or blood release functions.
+
+---
+
+### 33. USER INTERFACE AND NAVIGATION
+
+Build a professional Blade/Tailwind interface.
+
+Suggested navigation:
+
+**BLOOD BANK**
+
+1. Blood Bank Dashboard.
+2. Facilities.
+3. Donor Registry.
+4. Donor Assessments.
+5. Donation Appointments.
+6. Blood Collection.
+7. Donation History.
+8. Laboratory Screening.
+9. Blood Grouping.
+10. Component Preparation.
+11. Quality Control.
+12. Blood Storage.
+13. Cold Chain Monitoring.
+14. Blood Inventory.
+15. Blood Requests.
+16. Compatibility Testing.
+17. Reservations and Allocation.
+18. Blood Issue and Dispatch.
+19. Transfusion Records.
+20. Transfusion Reactions.
+21. Returns.
+22. Recalls and Quarantine.
+23. Transfers.
+24. Disposal.
+25. Traceability.
+26. Reports.
+27. Analytics.
+28. Configuration.
+
+### Required screens
+
+**A. Blood Bank Dashboard**
+
+Show donor, collection, inventory, requests, compatibility, cold chain and transfusion activity.
+
+**B. Donor Profile**
+
+Tabs:
+
+- Overview.
+- Personal Details.
+- Consent.
+- Assessment.
+- Donation History.
+- Screening History.
+- Deferrals.
+- Communications.
+- Activity History.
+
+**C. Donation Workspace**
+
+Show donor assessment, collection, identifiers, screening, component processing and release status.
+
+**D. Component Management**
+
+Display each blood unit, its parent donation, blood group, component, expiry, storage and lifecycle status.
+
+**E. Cold Chain Workspace**
+
+Display storage units, temperature history, excursions, equipment status and outstanding actions.
+
+**F. Blood Request Workspace**
+
+Show requests by department, priority, patient, required component and fulfillment status.
+
+**G. Compatibility Workspace**
+
+Show the patient specimen, component unit, laboratory results, verification and authorization.
+
+**H. Blood Issue Workspace**
+
+Allow authorized personnel to verify and issue eligible units with acknowledgement.
+
+**I. Transfusion Workspace**
+
+Record actual transfusion events and reference nursing observations and reactions.
+
+**J. Traceability Workspace**
+
+Allow authorized personnel to trace a component backward to donation and forward to requests, issues, transfusions, returns or disposal.
+
+All interfaces must be fully functional.
+
+No static placeholders, fake stock, fake blood groups or dead controls.
+
+---
+
+### 34. NOTIFICATIONS AND ALERTS
+
+Integrate with the existing notification system.
+
+Support:
+
+- Donation appointment reminders.
+- Donor assessment pending.
+- Collection pending.
+- Screening incomplete.
+- Component preparation pending.
+- QC failure.
+- Component nearing expiry.
+- Component expired.
+- Temperature excursion.
+- Storage equipment failure.
+- Blood shortage.
+- Emergency blood request.
+- Compatibility review pending.
+- Reservation expiry.
+- Blood issue pending acknowledgement.
+- Blood return pending inspection.
+- Recall alert.
+- Transfusion reaction escalation.
+- Pending stock reconciliation.
+
+Use in-app, SMS, email or WhatsApp only where real integrations exist.
+
+Track notification attempts and actual delivery separately.
+
+Never expose confidential donor test results through insecure messages.
+
+---
+
+### 35. AUDIT, SECURITY AND PRIVACY
+
+Use Foundation AuditLogService.
+
+Audit:
+
+- Donor creation and changes.
+- Donor assessment.
+- Consent.
+- Donation collection.
+- Donation interruption.
+- Screening references.
+- Blood grouping.
+- Component preparation.
+- QC.
+- Release.
+- Storage assignment.
+- Temperature records.
+- Temperature excursions.
+- Quarantine.
+- Blood request.
+- Compatibility results.
+- Reservation.
+- Allocation.
+- Issue.
+- Dispatch.
+- Receipt.
+- Transfusion.
+- Transfusion reaction.
+- Return.
+- Recall.
+- Disposal.
+- Transfer.
+- Stock reconciliation.
+- Document access and export.
+
+Security requirements:
+
+- Authentication.
+- Granular RBAC.
+- Branch and facility isolation.
+- Donor privacy.
+- Patient privacy.
+- Professional authorization.
+- IDOR protection.
+- CSRF protection.
+- XSS protection.
+- SQL injection protection.
+- Mass assignment protection.
+- Secure private uploads.
+- Secure report downloads.
+- Sensitive information masking.
+- No confidential screening results in application logs.
+
+Do not destructively delete donor, donation, laboratory, component or transfusion history.
+
+---
+
+### 36. REGULATORY AND CLINICAL GOVERNANCE
+
+The Blood Bank must be configurable according to approved hospital and applicable Tanzanian regulatory requirements.
+
+Before production deployment, the implementation team must verify applicable requirements through current authoritative sources and the hospital's responsible clinical and regulatory leadership.
+
+Do not invent or hardcode:
+
+- Donor eligibility thresholds.
+- Mandatory screening panels.
+- Blood component shelf-life.
+- Storage temperatures.
+- QC limits.
+- Compatibility rules.
+- Transfusion monitoring schedules.
+- Emergency-release rules.
+- Disposal procedures.
+- Professional authorization requirements.
+
+For each configured policy, retain:
+
+- Policy name.
+- Source.
+- Version.
+- Effective date.
+- Approval.
+- Responsible authority.
+- Review date.
+
+The system must distinguish configured policy from software defaults.
+
+No claim of regulatory compliance should be made without documented verification.
+
+---
+
+### 37. AUTOMATED TESTING
+
+Implement and execute tests for:
+
+**Donor management**
+
+1. Donor registration.
+2. Unique donor number.
+3. Donor assessment.
+4. Donor consent.
+5. Donor deferral.
+6. Reassessment.
+7. Donor privacy.
+
+**Collection**\
+8\. Donation appointment.\
+9\. Walk-in registration.\
+10\. Collection eligibility validation.\
+11\. Collection creation.\
+12\. Unique donation number.\
+13\. Interrupted collection.\
+14\. Collection history.
+
+**Laboratory**\
+15\. Screening order integration.\
+16\. Screening result reference.\
+17\. Blood grouping.\
+18\. Result authorization.\
+19\. Incomplete screening restriction.\
+20\. Compatibility testing.\
+21\. Incompatible result restriction.
+
+**Components**\
+22\. Component creation.\
+23\. Parent donation lineage.\
+24\. Multiple component lineage.\
+25\. QC failure.\
+26\. Component release restrictions.\
+27\. Component label uniqueness.
+
+**Storage**\
+28\. Storage assignment.\
+29\. Capacity validation.\
+30\. Temperature recording.\
+31\. Temperature excursion.\
+32\. Quarantine.\
+33\. Equipment failure restriction.
+
+**Inventory**\
+34\. Blood unit availability.\
+35\. Unit reservation.\
+36\. Concurrent reservation prevention.\
+37\. Allocation.\
+38\. Expiry restrictions.\
+39\. Recall restrictions.\
+40\. Issue exactly once.\
+41\. Return inspection.\
+42\. Disposal.\
+43\. Facility transfer.\
+44\. Stock reconciliation.
+
+**Transfusion**\
+45\. Transfusion record.\
+46\. Issue versus administration separation.\
+47\. Partial transfusion.\
+48\. Interrupted transfusion.\
+49\. Reaction documentation.\
+50\. Trace-back.\
+51\. Trace-forward.
+
+**Integration and security**\
+52\. PatientCare integration.\
+53\. Diagnostics integration.\
+54\. ICU integration.\
+55\. Emergency integration.\
+56\. Theatre integration.\
+57\. Nursing/eMAR integration.\
+58\. Finance integration.\
+59\. Branch isolation.\
+60\. Donor privacy.\
+61\. Unauthorized release prevention.\
+62\. Duplicate event prevention.\
+63\. Audit history.\
+64\. Concurrency.\
+65\. Migration safety.
+
+Report exact commands, test counts, failures and skipped tests.
+
+Do not claim unexecuted tests passed.
+
+Use MySQL/MariaDB integration testing for real concurrency guarantees where possible. SQLite serialization is not proof of production concurrency safety.
+
+---
+
+### 38. IMPLEMENTATION ORDER
+
+Implement in this sequence:
+
+**Stage 1 — Dependency Audit**
+
+- Inspect repository.
+- Verify existing modules.
+- Identify canonical patient, diagnostic and inventory services.
+- Identify missing integration dependencies.
+
+**Stage 2 — Blood Bank Foundation**
+
+- Facility configuration.
+- Permissions.
+- Audit.
+- Number generation.
+
+**Stage 3 — Donor Management**
+
+- Donor registration.
+- Consent.
+- Assessment.
+- Donor history.
+- Scheduling.
+
+**Stage 4 — Donation Collection**
+
+- Collection workflow.
+- Donation identifiers.
+- Collection records.
+- Traceability.
+
+**Stage 5 — Laboratory Screening**
+
+- Diagnostics integration.
+- Screening orders.
+- Blood grouping.
+- Verification and authorization.
+
+**Stage 6 — Component Preparation**
+
+- Component lineage.
+- Processing.
+- QC.
+- Release workflow.
+
+**Stage 7 — Storage and Cold Chain**
+
+- Storage facilities.
+- Temperature monitoring.
+- Excursion handling.
+- Quarantine.
+
+**Stage 8 — Blood Inventory**
+
+- Unit-level inventory.
+- Stock ledger.
+- Expiry.
+- Recall.
+- Reconciliation.
+
+**Stage 9 — Blood Requests and Compatibility**
+
+- Request management.
+- Crossmatch.
+- Compatibility authorization.
+
+**Stage 10 — Reservation and Issue**
+
+- Reservation.
+- Allocation.
+- Issue.
+- Dispatch.
+- Receipt acknowledgement.
+
+**Stage 11 — Transfusion**
+
+- Actual transfusion documentation.
+- Reaction management.
+- Nursing integration.
+
+**Stage 12 — Returns and Disposal**
+
+- Returns.
+- Inspection.
+- Disposal.
+- Facility transfers.
+
+**Stage 13 — Integrations**
+
+- Emergency.
+- ICU.
+- Theatre.
+- Diagnostics.
+- Inventory.
+- Finance.
+- Nursing.
+
+**Stage 14 — UI, Reports and Analytics**
+
+- Functional screens.
+- Dashboards.
+- Traceability.
+- Exports.
+
+**Stage 15 — Testing and Acceptance**
+
+- End-to-end testing.
+- Security.
+- Concurrency.
+- Reconciliation.
+- Performance.
+- Final evidence report.
+
+Do not skip implementation stages.
+
+---
+
+### 39. FINAL ACCEPTANCE CRITERIA
+
+The module may be ACCEPTED only when:
+
+- Donor registration works.
+- Donor assessment and consent work.
+- Donation collection works.
+- Donation identification is unique.
+- Laboratory screening integration works.
+- Blood grouping is traceable.
+- Component preparation and lineage work.
+- QC controls work.
+- Storage management works.
+- Cold chain monitoring works.
+- Quarantine restrictions work.
+- Unit-level inventory works.
+- Blood requests work.
+- Compatibility testing is traceable.
+- Reservation and allocation prevent duplication.
+- Blood issue is controlled.
+- Receipt acknowledgement works.
+- Actual transfusion is separately documented.
+- Transfusion reaction reporting works.
+- Returns and disposal work.
+- Facility transfers work.
+- Trace-back and trace-forward work.
+- Inventory ledger reconciliation works.
+- RBAC and branch isolation work.
+- Donor and patient privacy are protected.
+- Reports use real persisted data.
+- All major UI screens are functional.
+- Required automated tests pass.
+- No unresolved CRITICAL or HIGH defects remain.
+
+---
+
+### 40. FINAL DEVELOPER DELIVERY REPORT
+
+Deliver:
+
+1. Executive summary.
+2. Repository dependency audit.
+3. Architecture overview.
+4. Files created and modified.
+5. Database migrations.
+6. Entity relationships.
+7. Donor management.
+8. Donation collection.
+9. Laboratory screening integration.
+10. Blood grouping.
+11. Component preparation.
+12. Quality control.
+13. Storage and cold chain.
+14. Inventory integration.
+15. Blood requests.
+16. Compatibility testing.
+17. Reservation and allocation.
+18. Issue and dispatch.
+19. Transfusion documentation.
+20. Reaction and incident management.
+21. Returns and disposal.
+22. Transfers.
+23. Traceability.
+24. Finance integration.
+25. Emergency, ICU and Theatre integration.
+26. Screenshots of major interfaces.
+27. Reports and dashboard evidence.
+28. RBAC and audit evidence.
+29. Automated test commands and results.
+30. Security findings.
+31. Performance findings.
+32. Regulatory configuration limitations.
+33. Outstanding defects.
+34. Production deployment instructions.
+35. Backup and recovery considerations.
+
+Use statuses:
+
+- PASS.
+- PARTIAL.
+- FAIL.
+- NOT IMPLEMENTED.
+- NOT TESTED.
+
+Final verdict:
+
+- ACCEPTED.
+- CONDITIONALLY ACCEPTED.
+- REJECTED.
+
+Resolve CRITICAL and HIGH defects before acceptance.
+
+### STRICT EXECUTION RULES
+
+- Inspect actual repository code before implementation.
+- Preserve existing modular architecture.
+- Reuse canonical patient, diagnostic, inventory and nursing systems.
+- Do not create duplicate patient or laboratory records.
+- Do not create a second stock ledger.
+- Do not invent clinical or regulatory thresholds.
+- Do not automatically declare blood compatible.
+- Do not issue quarantined, expired or recalled units.
+- Do not equate blood issue with transfusion.
+- Do not automatically return unused blood to available stock.
+- Do not delete donation or transfusion history.
+- Do not claim external integrations without evidence.
+- Do not claim tests passed unless executed.
+- Do not leave placeholder interfaces or dead controls.
+- Do not begin Phase 13 during this implementation.
+
+**FINAL INSTRUCTION: Build Phase 12 as a complete, integrated Blood Bank Management subsystem with donor management, collection, laboratory screening, component preparation, cold chain, inventory, requests, compatibility, allocation, issue, transfusion traceability, reaction management, reporting, security and automated testing. Deliver the implementation with a truthful, evidence-based final acceptance report.**
+
+Baada ya Phase 12, tutaendelea na Phase 13 — Mortuary Management System.

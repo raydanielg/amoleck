@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['surgical_case_id','patient_document_id','category','description','path','original_name','mime','uploaded_by'])]
 class SurgicalCaseDocument extends Model
 {
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
 }

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PreoperativeAssessment extends Model
 {
     protected $casts = ['assessed_at' => 'datetime', 'cleared_at' => 'datetime'];
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function patient(): BelongsTo { return $this->belongsTo(\Modules\PatientCare\Models\Patient::class); }
     public function clinician(): BelongsTo { return $this->belongsTo(\App\Models\User::class,'clinician_id'); }
     public function versions(): HasMany { return $this->hasMany(PreoperativeAssessmentVersion::class); }

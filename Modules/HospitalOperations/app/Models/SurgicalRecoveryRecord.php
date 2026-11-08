@@ -12,7 +12,7 @@ class SurgicalRecoveryRecord extends Model
 {
     public const STATUSES = ['awaiting_recovery','received','under_observation','reassessment_required','ready_for_review','cleared_for_transfer','transferred','escalated','cancelled'];
     protected $casts = ['arrived_at' => 'datetime', 'cleared_at' => 'datetime', 'transferred_at' => 'datetime'];
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function patient(): BelongsTo { return $this->belongsTo(\Modules\PatientCare\Models\Patient::class); }
     public function bed(): BelongsTo { return $this->belongsTo(RecoveryBed::class,'recovery_bed_id'); }
     public function assessments(): HasMany { return $this->hasMany(SurgicalRecoveryAssessment::class); }

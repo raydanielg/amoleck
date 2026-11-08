@@ -183,3 +183,10 @@ Route::middleware(['auth', 'verified', 'account.active', 'module.enabled:Hospita
     Route::post('cases/{case}/postop-admission', [RecoveryController::class, 'postopAdmission'])->name('postop_admission');
     Route::post('recovery-beds/{bed}/clean', [RecoveryController::class, 'cleanBed'])->name('recovery_beds.clean');
 });
+
+Route::middleware(['auth', 'verified', 'account.active', 'module.enabled:HospitalOperations'])->get('admin/surgery/notes/{note}/print', function (\Modules\HospitalOperations\Models\OperativeNote $note) {
+    abort_unless(request()->user()->can('surgery.cases.view'), 403);
+    abort_unless(\Modules\Foundation\Support\BranchContext::canAccess(request()->user(), (int) $note->case->branch_id), 403);
+    \Modules\Foundation\Support\Audit::record('surgery.opnote_printed', $note->case->patient, null, ['note' => $note->id], $note->case->branch_id);
+    return response()->view('surgery.operative-note', ['note' => $note->load(['case.patient', 'case.branch', 'operation.surgeon', 'operation.anesthetist', 'operation.procedures', 'author']), 'hospital' => \Modules\Foundation\Models\HospitalProfile::current()]);
+})->name('admin.surgery.notes.print');

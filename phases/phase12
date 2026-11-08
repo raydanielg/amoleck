@@ -1,0 +1,1221 @@
+Tunaendelea na PHASE 13 — MORTUARY MANAGEMENT SYSTEM.
+
+Moduli hii itasimamia usajili na utunzaji wa miili, maeneo ya kuhifadhi, utambulisho, chain of custody, nyaraka, vibali na makabidhiano ya mwili kwa ndugu au taasisi iliyoidhinishwa.
+
+Itajengwa ndani ya Laravel Modular Monolith iliyopo, bila kutengeneza patient management, inventory au finance systems nyingine. Developer anatakiwa kwanza kukagua utekelezaji halisi wa Phase 12 na dependencies zote kabla ya kuanza.
+
+# PHASE 13 — MORTUARY MANAGEMENT SYSTEM
+
+## Master Developer Implementation Prompt
+
+You are a senior Laravel architect and healthcare information systems engineer. Your task is to implement **Phase 13: Mortuary Management System** as a secure, auditable, production-grade module within the existing Hospital Management System.
+
+This is an implementation task, not a request for a conceptual proposal. Inspect the actual repository, understand the existing architecture, identify dependencies, implement the approved scope, and provide verifiable test evidence.
+
+---
+
+# 1. NON-NEGOTIABLE ARCHITECTURE
+
+The existing HMS architecture must be preserved.
+
+- Application architecture: Laravel Modular Monolith.
+- Module infrastructure: `nwidart/laravel-modules`.
+- Backend: Laravel.
+- Database: existing MySQL/MariaDB.
+- Frontend: Laravel Blade + Tailwind CSS.
+- Authentication: existing Foundation authentication.
+- Authorization: existing Policies/Gates and permission system.
+- Audit: existing Foundation AuditLogService.
+- Organization: one hospital organization with multiple branches.
+- Language: English initially, with Swahili-ready labels.
+- Timezone: `Africa/Dar_es_Salaam`.
+- Currency: TZS.
+
+Primary module location:
+
+`Modules/Mortuary`
+
+If an existing Mortuary or equivalent module is already present, inspect and extend it instead of creating a duplicate.
+
+Do not introduce:
+
+- NestJS, Node.js, React, Next.js, Vue or Flutter.
+- Microservices.
+- A second authentication system.
+- A second patient registry.
+- A separate inventory ledger.
+- A separate billing or payment engine.
+- A parallel employee directory.
+
+# 2. DEPENDENCY AND REPOSITORY AUDIT — BEFORE CODING
+
+Inspect the actual repository and identify:
+
+1. Existing Foundation module and branch access controls.
+2. PatientCare patient records and deceased-patient status handling.
+3. HospitalOperations admission, discharge and emergency workflows.
+4. Phase 12 Blood Bank implementation, where relevant.
+5. Inventory equipment and cold-storage equipment records.
+6. Finance pricing, invoicing, payments and GL integration.
+7. Existing document storage and private file access.
+8. Existing notifications and background jobs.
+9. Existing audit logging and reporting infrastructure.
+10. Existing module registration and navigation conventions.
+
+Produce a dependency report containing:
+
+| Dependency          | Actual implementation | Integration approach            | Gap    |
+| ------------------- | --------------------- | ------------------------------- | ------ |
+| Patient registry    | Inspect repository    | Reuse canonical patient         | Report |
+| Branch management   | Inspect repository    | Reuse Foundation                | Report |
+| Employee records    | Inspect repository    | Reuse existing employee records | Report |
+| Inventory/equipment | Inspect repository    | Reuse canonical records         | Report |
+| Finance             | Inspect repository    | Reuse canonical billing         | Report |
+| Audit               | Inspect repository    | Reuse AuditLogService           | Report |
+| Documents           | Inspect repository    | Reuse secure storage            | Report |
+
+Do not assume that any earlier phase is accepted merely because its specification exists.
+
+If a required dependency is incomplete, document the gap and implement only safe, compatible integration points. Do not fabricate successful integrations.
+
+# 3. MODULE PURPOSE
+
+The Mortuary Management System must manage the operational lifecycle of deceased persons and the custody of their remains within the hospital.
+
+The system should provide:
+
+- Deceased person intake and registration.
+- Mortuary case management.
+- Identity verification.
+- Body reception and handover documentation.
+- Mortuary storage location management.
+- Body movement and chain of custody.
+- Storage condition monitoring.
+- Legal and administrative document tracking.
+- Next-of-kin and authorized representative records.
+- Release authorization and verification.
+- Final body release and handover.
+- Funeral home and transport coordination.
+- Postmortem coordination records where applicable.
+- Incidents, discrepancies and investigations.
+- Mortuary fees through the existing Finance module.
+- Operational dashboards and reports.
+
+The module is an administrative and custody-management system. It must not replace clinical death certification, forensic investigation, legal authorities or professional medical judgment.
+
+# 4. CORE WORKFLOW
+
+Implement the following lifecycle:
+
+1. Deceased person is identified through an existing patient record or an authorized external-person registration workflow.
+2. An authorized staff member creates a mortuary case.
+3. The system generates a unique mortuary case number.
+4. Staff document the source of the body and reception details.
+5. Identity and accompanying documentation are checked.
+6. The body is assigned to an available mortuary storage location.
+7. Every custody transfer and movement is recorded.
+8. Authorized staff review required documentation and release eligibility.
+9. An authorized person or institution is verified.
+10. Release approval is recorded.
+11. The body is handed over with signed documentation.
+12. The case is closed while preserving the complete historical record.
+
+The system must prevent unauthorized release and must not permit a case to be marked as released without the required authorization and handover evidence.
+
+# 5. MORTUARY CASE MANAGEMENT
+
+Create a complete case management workflow.
+
+Suggested case number:
+
+`MOR-2026-000001`
+
+The sequence must be generated safely under concurrent requests. It must be unique within the hospital organization and must not reset when a case changes branches.
+
+Suggested case statuses:
+
+- Draft
+- Received
+- Identity Verification Pending
+- Documentation Pending
+- Awaiting Storage
+- In Storage
+- Under Review
+- Release Pending
+- Approved for Release
+- Released
+- Transferred
+- On Hold
+- Incident Investigation
+- Closed
+- Cancelled
+
+Requirements:
+
+- Validate every status transition.
+- Record who initiated the transition.
+- Record the date and time.
+- Record the reason where required.
+- Store previous and new status values.
+- Do not allow arbitrary status changes through direct database updates.
+- Do not delete a case that has custody or release history.
+- Restrict cancellation to authorized roles and require a reason.
+
+A case must have a clear distinction between operational status, identity verification status and release authorization status.
+
+# 6. DECEASED PERSON IDENTITY MANAGEMENT
+
+Reuse the canonical PatientCare patient record whenever one exists.
+
+Do not create a duplicate patient record for a person already registered in the hospital.
+
+For external cases, provide a controlled deceased-person identity record that clearly distinguishes it from a normal patient registration.
+
+Capture appropriate fields:
+
+- Existing patient reference, where available.
+- Full recorded name.
+- Hospital MRN, where available.
+- Date of birth or estimated age, where documented.
+- Sex as recorded in source documentation.
+- National identification or other official identification reference, when lawfully available.
+- Source of identity information.
+- Identity verification status.
+- Verification method.
+- Verification officer.
+- Verification timestamp.
+- Identity discrepancies.
+- Alternative identifiers, where applicable.
+
+Identity verification states:
+
+- Not Verified
+- Partially Verified
+- Verified
+- Disputed
+- Unknown Identity
+
+Rules:
+
+- Never automatically mark identity as verified.
+- Do not infer identity from appearance.
+- Do not overwrite conflicting source records.
+- Maintain the original source and verification history.
+- Restrict access to sensitive identity information.
+
+For unidentified persons, allow an authorized temporary identity designation and support later controlled identity updates.
+
+# 7. BODY RECEPTION AND INTAKE
+
+Create a body reception workflow.
+
+Capture:
+
+- Mortuary case number.
+- Date and time received.
+- Receiving branch.
+- Receiving department or facility.
+- Source facility or department.
+- Source admission or emergency reference, where applicable.
+- Person delivering the body.
+- Receiving staff member.
+- Transport details.
+- Condition of external packaging or container, where relevant.
+- Accompanying documents.
+- Accompanying property records, if applicable.
+- Reception notes.
+- Identity status at reception.
+- Reception checklist.
+- Signatures or authorized confirmation.
+
+The reception process must distinguish:
+
+- Information supplied by the source.
+- Information independently verified by hospital staff.
+- Information that remains unknown.
+
+Support a controlled reception checklist with configurable items.
+
+Do not create medical conclusions about the cause or circumstances of death.
+
+# 8. MORTUARY STORAGE MANAGEMENT
+
+Create operational storage management for mortuary facilities.
+
+Storage hierarchy:
+
+Hospital Branch\
+→ Mortuary\
+→ Storage Room\
+→ Storage Unit\
+→ Compartment / Position
+
+Suggested storage attributes:
+
+- Storage code.
+- Branch.
+- Room.
+- Unit.
+- Compartment.
+- Storage type.
+- Capacity.
+- Operational status.
+- Equipment reference.
+- Availability status.
+- Last inspection.
+- Notes.
+
+Storage statuses:
+
+- Available
+- Occupied
+- Reserved
+- Maintenance
+- Out of Service
+- Inspection Required
+
+Requirements:
+
+- Prevent two active cases from occupying the same exclusive position.
+- Prevent assignment to unavailable storage.
+- Maintain occupancy history.
+- Support controlled transfers between positions.
+- Support inter-branch transfers with documented authorization.
+- Record the responsible staff member.
+- Record movement timestamps.
+- Never silently overwrite the previous storage assignment.
+
+The system must calculate current occupancy from valid active assignments, not from manually editable counters alone.
+
+# 9. BODY MOVEMENT AND CHAIN OF CUSTODY
+
+This is one of the most important modules.
+
+Every physical movement must create an immutable custody event.
+
+Capture:
+
+- Mortuary case.
+- Previous location.
+- Destination location.
+- Movement type.
+- Reason for movement.
+- Initiating employee.
+- Releasing employee.
+- Receiving employee.
+- Authorizing employee, where required.
+- Date and time.
+- Verification method.
+- Supporting document or evidence.
+- Notes.
+- Confirmation signatures.
+
+Movement types may include:
+
+- Initial Reception
+- Storage Assignment
+- Storage Relocation
+- Inspection Movement
+- Postmortem Transfer
+- External Facility Transfer
+- Release Preparation
+- Final Handover
+- Return to Storage
+- Other Authorized Movement
+
+Rules:
+
+- Every movement must have a traceable origin and destination.
+- Do not allow an unauthorized employee to approve their own restricted movement where separation of duties is required.
+- Require receiving confirmation for custody transfers.
+- Support a pending transfer state until the receiving party confirms.
+- Prevent duplicate movement submissions.
+- Do not permit historical movement records to be edited or deleted.
+- Corrections must be recorded as new, linked correction events.
+
+Provide a chronological chain-of-custody timeline on the case details page.
+
+# 10. NEXT-OF-KIN AND AUTHORIZED REPRESENTATIVE MANAGEMENT
+
+Create a controlled representative management workflow.
+
+Capture:
+
+- Full name.
+- Relationship to the deceased, as stated by the representative.
+- Contact details.
+- Identification type and reference, where legally appropriate.
+- Address or location details.
+- Verification status.
+- Verification method.
+- Verified by.
+- Verification timestamp.
+- Supporting documents.
+- Authorization type.
+- Authorization validity.
+- Notes.
+
+Support multiple representatives, but clearly identify which representative is authorized for a particular action.
+
+Possible authorization types:
+
+- Information Contact
+- Documentation Representative
+- Release Applicant
+- Legally Authorized Representative
+- Funeral Home Representative
+- Other Approved Representative
+
+Rules:
+
+- Being listed as next of kin must not automatically grant release authorization.
+- Do not assume that family relationship alone establishes legal authority.
+- Require the appropriate hospital-approved evidence and review.
+- Preserve previous representative records and authorization changes.
+- Restrict personal contact information to authorized roles.
+
+# 11. DOCUMENTATION AND LEGAL CLEARANCE TRACKING
+
+Implement configurable document requirements.
+
+Possible document categories:
+
+- Hospital death documentation.
+- Medical certification reference.
+- Identification documents.
+- Next-of-kin documentation.
+- Release authorization.
+- Police or other authority documentation, where applicable.
+- Postmortem-related authorization, where applicable.
+- Funeral home documentation.
+- Transport or handover documentation.
+- Other hospital-approved documents.
+
+Each document record must include:
+
+- Document category.
+- Mortuary case reference.
+- Document reference number.
+- Issuing institution.
+- Issue date.
+- Expiry date, if applicable.
+- Uploaded file.
+- Uploaded by.
+- Verification status.
+- Verified by.
+- Verification date.
+- Rejection reason.
+- Version history.
+
+Document statuses:
+
+- Missing
+- Uploaded
+- Pending Verification
+- Verified
+- Rejected
+- Expired
+- Superseded
+
+Requirements:
+
+- Store files in private storage.
+- Never expose document paths through public URLs.
+- Use authorization-controlled downloads.
+- Validate file types and size.
+- Log document access where appropriate.
+- Maintain document version history.
+- Do not silently replace verified documents.
+
+Important: Do not hardcode legal document requirements as universal Tanzanian law. Build configurable requirements based on approved hospital policy and requirements verified by the hospital's legal or compliance personnel.
+
+# 12. POSTMORTEM AND EXTERNAL AUTHORITY COORDINATION
+
+Provide an administrative coordination workflow for cases requiring postmortem or external authority involvement.
+
+Capture:
+
+- Mortuary case.
+- Requesting authority or department.
+- Request reference.
+- Request date.
+- Authorization status.
+- Assigned external institution, where applicable.
+- Transfer destination.
+- Responsible staff.
+- Transfer date and time.
+- Expected return date, if applicable.
+- Actual return date.
+- Supporting documents.
+- Coordination status.
+- Notes.
+
+Suggested statuses:
+
+- Not Required
+- Requested
+- Awaiting Authorization
+- Authorized
+- Scheduled
+- Transferred
+- In Progress
+- Returned
+- Completed
+- Cancelled
+
+The system must not perform forensic analysis, determine cause of death or replace official postmortem reports.
+
+Any clinical or forensic findings must remain in their appropriate authoritative records, with only necessary references and approved documents linked to the mortuary case.
+
+# 13. COLD STORAGE AND EQUIPMENT MONITORING
+
+Integrate with the existing Inventory equipment and maintenance records.
+
+Do not create a second equipment register.
+
+Where the existing system supports it, connect:
+
+- Mortuary refrigerators.
+- Cold rooms.
+- Temperature monitoring devices.
+- Backup power equipment.
+- Other approved storage equipment.
+
+Capture temperature observations or receive them from a verified monitoring integration.
+
+Each observation should include:
+
+- Equipment reference.
+- Mortuary storage area.
+- Recorded value.
+- Unit.
+- Timestamp.
+- Recording source.
+- Recorded by, if manual.
+- Verification status.
+
+Requirements:
+
+- Use configured operating limits approved by hospital management.
+- Do not invent universal clinical or regulatory temperature limits.
+- Make limits configurable by equipment or storage type.
+- Record out-of-range observations.
+- Create an incident or maintenance alert when an approved threshold is breached.
+- Record corrective action.
+- Preserve the full observation history.
+- Distinguish manual readings from verified automated readings.
+
+If no real sensor integration exists, implement manual readings and an integration-ready adapter. Do not pretend that live monitoring is available.
+
+# 14. RELEASE AUTHORIZATION AND FINAL HANDOVER
+
+Implement a controlled release workflow.
+
+Before release, validate applicable requirements:
+
+- Correct mortuary case.
+- Identity verification status.
+- Required documentation.
+- Representative identity.
+- Representative authority.
+- Applicable external clearance.
+- Outstanding incident or investigation restrictions.
+- Financial clearance, only where hospital policy requires it and subject to lawful exceptions.
+
+Do not automatically block a legally required release based solely on unpaid fees. Financial restrictions must be configurable and reviewed against applicable law and approved hospital policy.
+
+Release statuses:
+
+- Not Requested
+- Requested
+- Under Review
+- Pending Documents
+- Pending Authorization
+- Approved
+- Rejected
+- On Hold
+- Released
+
+Capture:
+
+- Release applicant.
+- Authorized recipient.
+- Recipient identity verification.
+- Authorization evidence.
+- Approving officer.
+- Approval date and time.
+- Release destination.
+- Funeral home or transport provider, if applicable.
+- Vehicle or transport details, where required.
+- Handover date and time.
+- Releasing staff member.
+- Receiving person.
+- Signatures or approved confirmation.
+- Supporting documents.
+- Final notes.
+
+Rules:
+
+- A release cannot be finalized without the required approvals.
+- A release must be linked to a custody handover event.
+- Do not allow a second release for the same active case.
+- Do not permit a case to be closed before final handover is confirmed.
+- Rejected or cancelled release requests must remain in the audit history.
+- Any post-release correction must use an authorized correction workflow.
+
+Generate a printable release and handover report.
+
+# 15. INCIDENT AND DISCREPANCY MANAGEMENT
+
+Create an incident management workflow.
+
+Incident types may include:
+
+- Identity discrepancy.
+- Missing documentation.
+- Unauthorized access attempt.
+- Custody discrepancy.
+- Storage assignment error.
+- Temperature excursion.
+- Equipment failure.
+- Documentation inconsistency.
+- Unauthorized movement.
+- Release verification issue.
+- Other approved incident.
+
+Capture:
+
+- Incident number.
+- Mortuary case.
+- Incident type.
+- Description.
+- Date and time.
+- Reported by.
+- Severity according to hospital-defined categories.
+- Immediate action.
+- Assigned investigator.
+- Investigation notes.
+- Evidence.
+- Corrective action.
+- Approval.
+- Closure date.
+
+Suggested statuses:
+
+- Reported
+- Under Review
+- Investigation
+- Corrective Action Pending
+- Resolved
+- Closed
+- Reopened
+
+Rules:
+
+- Never delete an incident.
+- Maintain investigation history.
+- Restrict sensitive incident information.
+- Link incidents to affected cases, equipment or custody events.
+- Require authorized closure.
+
+# 16. FINANCE INTEGRATION
+
+Reuse the existing Finance module.
+
+Do not implement a new invoice, cashier, payment, refund or general ledger engine.
+
+If mortuary-related charges are approved by hospital policy:
+
+- Reuse the canonical service catalogue.
+- Reuse approved branch-specific pricing.
+- Create charge requests through the established Finance service.
+- Link charges to the mortuary case.
+- Reuse existing invoice and payment records.
+- Prevent duplicate charge capture.
+- Preserve credit notes and refund history.
+- Keep clinical and custody workflows independent from financial posting.
+
+Possible charge categories may be configured by authorized Finance users.
+
+Do not hardcode fees or assume that every mortuary service is chargeable.
+
+If Finance integration is incomplete, provide a documented adapter boundary and report the dependency gap.
+
+# 17. NOTIFICATIONS AND ALERTS
+
+Integrate with the existing notification infrastructure.
+
+Potential notifications:
+
+- New mortuary case received.
+- Identity verification pending.
+- Documentation missing.
+- Storage capacity warning.
+- Storage equipment maintenance alert.
+- Temperature excursion.
+- Pending custody transfer.
+- Release request submitted.
+- Release approval required.
+- Release rejected.
+- Incident assigned.
+- Incident escalation.
+- Case ready for authorized handover.
+
+Requirements:
+
+- Use role-based recipients.
+- Avoid exposing sensitive personal details in notification previews.
+- Log notification attempts and outcomes.
+- Avoid duplicate alerts.
+- Support configurable escalation intervals.
+- Do not send external SMS, WhatsApp or email unless the existing integration is configured and verified.
+
+# 18. DASHBOARDS AND REPORTS
+
+Create a clean, responsive Mortuary Dashboard.
+
+Dashboard widgets:
+
+- Total active cases.
+- Newly received cases.
+- Cases in storage.
+- Cases awaiting identity verification.
+- Cases with missing documents.
+- Pending release requests.
+- Approved releases awaiting handover.
+- Cases on hold.
+- Active incidents.
+- Storage capacity utilization.
+- Equipment maintenance alerts.
+- Temperature excursion alerts.
+- Average case processing time.
+
+Create reports:
+
+1. Daily mortuary intake.
+2. Monthly intake.
+3. Current occupancy.
+4. Storage utilization.
+5. Case status report.
+6. Identity verification report.
+7. Unidentified-person report.
+8. Documentation pending report.
+9. Custody movement history.
+10. Inter-branch transfer report.
+11. Release and handover register.
+12. Representative verification report.
+13. Postmortem coordination report.
+14. Incident register.
+15. Incident resolution report.
+16. Equipment maintenance report.
+17. Temperature monitoring report.
+18. Financial charge summary, sourced from Finance.
+19. Staff activity report.
+20. Case closure report.
+
+All reports must respect branch access and user permissions.
+
+Support authorized PDF and Excel exports if existing export infrastructure permits.
+
+Do not expose sensitive identity data in general-purpose dashboards.
+
+# 19. DATABASE DESIGN
+
+Design migrations based on existing conventions. Avoid creating duplicate tables or conflicting foreign keys.
+
+Potential tables:
+
+- `mortuary_cases`
+- `mortuary_case_status_histories`
+- `mortuary_identity_records`
+- `mortuary_identity_verifications`
+- `mortuary_receptions`
+- `mortuary_reception_checklists`
+- `mortuary_storage_areas`
+- `mortuary_storage_units`
+- `mortuary_storage_positions`
+- `mortuary_storage_assignments`
+- `mortuary_custody_events`
+- `mortuary_custody_confirmations`
+- `mortuary_representatives`
+- `mortuary_representative_authorizations`
+- `mortuary_documents`
+- `mortuary_document_verifications`
+- `mortuary_postmortem_requests`
+- `mortuary_external_transfers`
+- `mortuary_temperature_readings`
+- `mortuary_equipment_alerts`
+- `mortuary_release_requests`
+- `mortuary_release_approvals`
+- `mortuary_handovers`
+- `mortuary_incidents`
+- `mortuary_incident_actions`
+- `mortuary_charge_references`
+- `mortuary_number_sequences`
+
+These are proposed names, not permission to duplicate existing functionality.
+
+For every table:
+
+- Use appropriate primary keys.
+- Use foreign keys where compatible with existing conventions.
+- Add branch ownership where required.
+- Add indexes for case number, branch, status and date filters.
+- Add unique constraints.
+- Add timestamps.
+- Add creator/updater references where appropriate.
+- Add soft deletes only for non-historical configuration records where justified.
+- Do not soft-delete custody, release, audit or other immutable historical records.
+
+Use database transactions for critical operations.
+
+Use row-level locking where required for:
+
+- Number generation.
+- Storage assignment.
+- Custody transfers.
+- Release finalization.
+- Duplicate prevention.
+
+Verify concurrency behavior using the production database engine or a suitable integration environment. SQLite-only tests are not sufficient evidence for MySQL locking guarantees.
+
+# 20. SERVICE ARCHITECTURE
+
+Keep business logic out of controllers.
+
+Create service classes following existing module conventions. Suggested services:
+
+- `MortuaryCaseService`
+- `MortuaryIdentityService`
+- `MortuaryReceptionService`
+- `MortuaryStorageService`
+- `MortuaryCustodyService`
+- `MortuaryRepresentativeService`
+- `MortuaryDocumentService`
+- `MortuaryPostmortemService`
+- `MortuaryTemperatureService`
+- `MortuaryReleaseService`
+- `MortuaryIncidentService`
+- `MortuaryFinanceIntegrationService`
+- `MortuaryNotificationService`
+- `MortuaryReportService`
+
+Use:
+
+- Form Requests for validation.
+- Policies for authorization.
+- Events and listeners for decoupled workflows.
+- Jobs for asynchronous tasks.
+- Database transactions for critical workflows.
+- Idempotency keys for operations vulnerable to duplicate submissions.
+- DTOs or equivalent structured objects where appropriate.
+
+Do not create unnecessary abstractions.
+
+# 21. RBAC AND SECURITY
+
+Integrate with Foundation permissions.
+
+Suggested permissions:
+
+- `mortuary.dashboard.view`
+- `mortuary.cases.view`
+- `mortuary.cases.create`
+- `mortuary.cases.update`
+- `mortuary.cases.cancel`
+- `mortuary.identity.view`
+- `mortuary.identity.verify`
+- `mortuary.reception.manage`
+- `mortuary.storage.view`
+- `mortuary.storage.manage`
+- `mortuary.custody.initiate`
+- `mortuary.custody.confirm`
+- `mortuary.representatives.manage`
+- `mortuary.documents.upload`
+- `mortuary.documents.verify`
+- `mortuary.postmortem.manage`
+- `mortuary.temperature.view`
+- `mortuary.temperature.record`
+- `mortuary.release.request`
+- `mortuary.release.review`
+- `mortuary.release.approve`
+- `mortuary.release.finalize`
+- `mortuary.incidents.report`
+- `mortuary.incidents.investigate`
+- `mortuary.incidents.close`
+- `mortuary.reports.view`
+- `mortuary.reports.export`
+- `mortuary.settings.manage`
+
+Suggested role templates:
+
+- Mortuary Administrator
+- Mortuary Officer
+- Mortuary Attendant
+- Identity Verification Officer
+- Release Authorization Officer
+- Mortuary Supervisor
+- Compliance Officer
+- Hospital Administrator
+- Finance Officer
+- Equipment/Maintenance Officer
+- Auditor
+
+These must be configurable through existing RBAC.
+
+Security requirements:
+
+- Enforce branch scope server-side.
+- Apply authorization to every route and data retrieval.
+- Prevent insecure direct object references.
+- Protect document downloads.
+- Validate uploads.
+- Apply CSRF protection.
+- Use secure session handling.
+- Avoid sensitive details in logs and URLs.
+- Audit sensitive record access and changes where appropriate.
+- Apply separation of duties for critical release and custody actions.
+- Never trust frontend visibility as authorization.
+
+# 22. USER INTERFACE
+
+Build a premium, professional hospital administration interface using the existing Blade and Tailwind design system.
+
+Required screens:
+
+1. Mortuary Dashboard.
+2. Mortuary Case List.
+3. Register New Case.
+4. Case Details.
+5. Identity Verification.
+6. Reception Checklist.
+7. Storage Overview.
+8. Storage Assignment.
+9. Custody Timeline.
+10. Representative Management.
+11. Document Management.
+12. Postmortem Coordination.
+13. Temperature Monitoring.
+14. Release Request.
+15. Release Authorization.
+16. Final Handover.
+17. Incident Management.
+18. Mortuary Reports.
+19. Mortuary Configuration.
+
+Case details should use clear sections or tabs:
+
+- Overview
+- Identity
+- Reception
+- Storage
+- Custody History
+- Representatives
+- Documents
+- External Coordination
+- Release
+- Incidents
+- Finance References
+- Audit History
+
+UI requirements:
+
+- Responsive desktop and tablet layout.
+- Clear status indicators.
+- Search by case number and authorized identifiers.
+- Filters by branch, status, date and storage area.
+- Pagination.
+- Confirmation dialogs for sensitive actions.
+- Clear validation messages.
+- Empty states.
+- Loading states where needed.
+- Print-friendly handover reports.
+- No unnecessary visual clutter.
+
+Do not expose all case information to every user.
+
+# 23. AUDIT AND DATA GOVERNANCE
+
+Use the existing Foundation AuditLogService.
+
+Audit at minimum:
+
+- Case creation and status changes.
+- Identity verification.
+- Reception and corrections.
+- Storage assignment and relocation.
+- Custody transfer initiation and confirmation.
+- Representative authorization changes.
+- Document upload and verification.
+- Postmortem coordination changes.
+- Temperature excursion records.
+- Release request and approval.
+- Final handover.
+- Incident actions.
+- Finance integration references.
+- Sensitive document access.
+
+Maintain immutable historical events.
+
+Do not overwrite historical custody or release records.
+
+Corrections must record:
+
+- Original reference.
+- Correction reason.
+- Correcting employee.
+- Timestamp.
+- New corrected record or event.
+
+Apply approved retention and privacy policies. Do not invent statutory retention periods.
+
+# 24. TESTING REQUIREMENTS
+
+Write real automated tests using the repository's existing test framework.
+
+Minimum test categories:
+
+**Case management**
+
+- Unique mortuary case number.
+- Concurrent number generation.
+- Branch access.
+- Case status transitions.
+- Invalid transition rejection.
+- Duplicate submission protection.
+
+**Identity**
+
+- Existing patient reuse.
+- External-person registration.
+- Unknown identity handling.
+- Verification authorization.
+- Disputed identity restrictions.
+- Identity correction history.
+
+**Reception**
+
+- Valid reception.
+- Missing required information.
+- Duplicate reception prevention.
+- Unauthorized reception rejection.
+
+**Storage**
+
+- Valid assignment.
+- Duplicate position assignment prevention.
+- Unavailable position rejection.
+- Storage transfer.
+- Occupancy reconciliation.
+
+**Custody**
+
+- Movement event creation.
+- Unauthorized transfer rejection.
+- Receiving confirmation.
+- Duplicate transfer prevention.
+- Immutable history.
+- Cross-branch authorization.
+
+**Representatives and documents**
+
+- Representative verification.
+- Authorization validation.
+- Private document access.
+- Document versioning.
+- Expired or rejected document handling.
+
+**Release**
+
+- Missing document restrictions.
+- Unauthorized approval rejection.
+- Unverified recipient rejection.
+- Duplicate release prevention.
+- Handover confirmation.
+- Correct case closure.
+- Audit event verification.
+
+**Incidents and monitoring**
+
+- Incident creation and assignment.
+- Unauthorized incident closure rejection.
+- Temperature threshold alerts using configured limits.
+- Equipment outage handling.
+
+**Finance**
+
+- Idempotent charge capture.
+- Correct Finance reference.
+- No duplicate invoice/payment engine.
+- No false payment status.
+
+**Security**
+
+- RBAC enforcement.
+- Branch isolation.
+- CSRF protection.
+- Secure document downloads.
+- IDOR prevention.
+- Sensitive data access restrictions.
+
+**End-to-end scenario**
+
+Create an automated persisted workflow that:
+
+1. Registers an authorized mortuary case linked to an existing patient where appropriate.
+2. Records reception.
+3. Completes identity verification.
+4. Uploads and verifies required documentation.
+5. Assigns an available storage position.
+6. Records custody movement.
+7. Adds and verifies an authorized representative.
+8. Creates a release request.
+9. Reviews and approves the request.
+10. Confirms recipient identity.
+11. Finalizes handover.
+12. Closes the case.
+13. Verifies the complete custody timeline.
+14. Verifies audit events.
+15. Verifies that the storage position is available again.
+
+Also test failure scenarios: unauthorized release, missing documents, disputed identity, occupied storage, failed handover and duplicate submissions.
+
+Never claim tests passed unless they were actually executed.
+
+# 25. IMPLEMENTATION ORDER
+
+Implement the phase in controlled milestones.
+
+**M1 — Mortuary Foundation and Case Management**
+
+- Module setup.
+- Dependency audit.
+- Database foundation.
+- Case numbering.
+- Case lifecycle.
+- Basic dashboard.
+- RBAC.
+- Tests.
+
+**M2 — Reception, Identity and Documentation**
+
+- Existing patient integration.
+- External identity workflow.
+- Reception.
+- Verification.
+- Document management.
+- Tests.
+
+**M3 — Storage and Chain of Custody**
+
+- Storage hierarchy.
+- Occupancy.
+- Assignments.
+- Transfers.
+- Custody events.
+- Timeline.
+- Tests.
+
+**M4 — Representatives, Postmortem and External Coordination**
+
+- Representative records.
+- Authorization.
+- Postmortem coordination.
+- External transfers.
+- Tests.
+
+**M5 — Cold Storage, Equipment and Incidents**
+
+- Equipment integration.
+- Temperature observations.
+- Alerts.
+- Maintenance references.
+- Incident investigation.
+- Tests.
+
+**M6 — Release, Handover and Finance Integration**
+
+- Release requests.
+- Authorization.
+- Recipient verification.
+- Handover reports.
+- Finance adapter.
+- Tests.
+
+**M7 — Reporting, Integration and Final Acceptance Audit**
+
+- Reports.
+- Dashboard completion.
+- Full integration.
+- Security testing.
+- E2E testing.
+- Performance checks.
+- Documentation.
+- Final audit.
+
+Do not implement all milestones in one uncontrolled change. Preserve working functionality between milestones.
+
+# 26. ACCEPTANCE CRITERIA
+
+The module is not accepted merely because screens or database tables exist.
+
+Acceptance requires:
+
+1. All required workflows implemented.
+2. Existing patient identity reused correctly.
+3. Branch isolation verified.
+4. RBAC verified on backend routes and services.
+5. Storage occupancy is consistent.
+6. Chain of custody is complete and immutable.
+7. Release requires valid authorization.
+8. Final handover is traceable.
+9. Documents are stored privately.
+10. Equipment and Finance integrations use canonical records.
+11. No duplicate patient, inventory or finance systems.
+12. Audit events are verified.
+13. End-to-end tests pass.
+14. Security tests pass.
+15. Migrations work on the actual supported database.
+16. Existing modules continue functioning.
+17. No unresolved Critical or High severity defects.
+
+# 27. REQUIRED DELIVERY REPORT
+
+At the end of each milestone, provide:
+
+- Milestone name.
+- Files created.
+- Files modified.
+- Migrations added.
+- Routes added.
+- Permissions added.
+- Services and events added.
+- Screens completed.
+- Integrations completed.
+- Commands actually executed.
+- Test results and assertion counts.
+- Screenshots or UI evidence where available.
+- Known gaps.
+- Security findings.
+- Deployment instructions.
+- Next milestone recommendation.
+
+At M7, produce a final report with one of these verdicts:
+
+- ACCEPTED
+- CONDITIONALLY ACCEPTED
+- REJECTED
+
+Every verdict must be justified by actual source inspection, test output and integration evidence.
+
+Do not mark a milestone accepted if required workflows are only mocked, hardcoded or represented by static UI.
+
+# FINAL INSTRUCTION
+
+Start with the repository and dependency audit. Do not immediately generate tables or screens before understanding the existing code.
+
+Implement the Mortuary Management System as a first-class module of the existing HMS, preserving all established architectural decisions, canonical data ownership, security controls, branch isolation and historical records.
+
+The result must be reliable enough for real hospital operations, with particular emphasis on identity accuracy, custody traceability, privacy and authorized release.
+
+Muhimu: Phase 13 itahitaji ushahidi wa utekelezaji na audit ya M7 kabla ya kuitangaza kuwa imekubaliwa. Hatua inayofuata baada ya hapo itakuwa Phase 14, lakini itategemea matokeo halisi ya utekelezaji huu.

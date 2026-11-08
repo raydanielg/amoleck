@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SurgicalBooking extends Model
 {
     protected $casts = ['scheduled_date' => 'date', 'emergency_override' => 'boolean'];
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function patient(): BelongsTo { return $this->belongsTo(\Modules\PatientCare\Models\Patient::class); }
     public function theatre(): BelongsTo { return $this->belongsTo(OperatingTheatre::class,'operating_theatre_id'); }
     public function surgeon(): BelongsTo { return $this->belongsTo(\App\Models\User::class,'surgeon_id'); }

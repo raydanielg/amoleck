@@ -20,7 +20,10 @@ class SurgicalCaseController extends Controller
 {
     private function guardCase(Request $request, SurgicalCase $case): void
     {
-        abort_unless(BranchContext::canAccess($request->user(), (int) $case->branch_id), 403);
+        if (! BranchContext::canAccess($request->user(), (int) $case->branch_id)) {
+            fwrite(STDERR, "GUARD-FAIL user=".var_export($request->user()?->id, true)." caseBranch=".var_export($case->branch_id, true)." allowed=".BranchContext::allowed($request->user())->pluck('id')->implode(',')."\n");
+            abort(403);
+        }
         abort_unless(app(PatientAccessService::class)->canAccess($request->user(), $case->patient), 403);
     }
 

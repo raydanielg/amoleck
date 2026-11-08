@@ -10,6 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SurgicalCaseStatusHistory extends Model
 {
     protected $table = 'surgical_case_status_histories';
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function actor(): BelongsTo { return $this->belongsTo(\App\Models\User::class,'changed_by'); }
 }

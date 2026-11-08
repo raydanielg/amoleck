@@ -12,6 +12,6 @@ class SurgicalSpecimen extends Model
 {
     protected $casts = ['collected_at' => 'datetime'];
     public function operation(): BelongsTo { return $this->belongsTo(SurgicalOperation::class); }
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
     public function handovers(): HasMany { return $this->hasMany(SurgicalSpecimenHandover::class); }
 }

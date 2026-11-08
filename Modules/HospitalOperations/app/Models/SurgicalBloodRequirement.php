@@ -10,5 +10,5 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SurgicalBloodRequirement extends Model
 {
     protected $casts = ['confirmed_at' => 'datetime'];
-    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class); }
+    public function case(): BelongsTo { return $this->belongsTo(SurgicalCase::class, 'surgical_case_id'); }
 }
