@@ -46,7 +46,7 @@ class PharmacyService
             ->where('status', 'available')
             ->where('qty', '>', 0)
             ->where(fn ($q) => $q->whereNull('expiry_date')->orWhere('expiry_date', '>', today()))
-            ->orderByRaw('expiry_date IS NULL, expiry_date ASC')
+            ->orderByRaw('expiry_date IS NULL')->orderBy('expiry_date')
             ->get();
         $need = $orderedQty; $allocated = 0;
         foreach ($batches as $b) {

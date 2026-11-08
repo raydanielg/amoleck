@@ -67,8 +67,8 @@ class PharmacyTest extends TestCase
 
     public function test_fefo_selects_earliest_expiry()
     {
-        $this->stock(50, '2027-06-01', 'LATE');
-        $this->stock(50, '2026-06-01', 'EARLY');
+        $this->stock(50, '2028-06-01', 'LATE');
+        $this->stock(50, '2027-06-01', 'EARLY');
         $svc = app(PharmacyService::class);
         $d = $this->open();
         $svc->review($d, 'approved', $this->admin->id);
@@ -80,7 +80,7 @@ class PharmacyTest extends TestCase
     public function test_expired_batch_excluded()
     {
         $this->stock(50, '2020-01-01', 'EXPIRED');
-        $this->stock(50, '2027-01-01', 'GOOD');
+        $this->stock(50, '2028-01-01', 'GOOD');
         $svc = app(PharmacyService::class);
         $d = $this->open();
         $svc->review($d, 'approved', $this->admin->id);
