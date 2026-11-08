@@ -14,6 +14,7 @@ class DiagnosticTestParameter extends Model
     public function department(): BelongsTo { return $this->belongsTo(\Modules\HospitalOperations\Models\Department::class); }
     public function test(): BelongsTo { return $this->belongsTo(DiagnosticTest::class, 'diagnostic_test_id'); }
     public function parameter(): BelongsTo { return $this->belongsTo(DiagnosticTestParameter::class, 'diagnostic_test_parameter_id'); }
+    public function ranges() { return $this->hasMany(DiagnosticReferenceRange::class, 'diagnostic_test_parameter_id'); }
     public function parameters(): HasMany { return $this->hasMany(DiagnosticTestParameter::class, 'diagnostic_test_id'); }
     public function branches(): HasMany { return $this->hasMany(DiagnosticBranchTest::class, 'diagnostic_test_id'); }
     public function branch(): BelongsTo { return $this->belongsTo(\Modules\Foundation\Models\Branch::class); }
