@@ -256,6 +256,11 @@ class PermissionCatalog
                 'finance.accounting.manage' => ['Manage accounting', 'critical'],
                 'finance.journals.post' => ['Post journals', 'critical'],
                 'finance.expenses.manage' => ['Manage expenses', 'high'],
+                'finance.budgets.view' => ['View budgets', 'medium'],
+                'finance.budgets.manage' => ['Manage budgets', 'critical'],
+                'finance.budgets.approve' => ['Approve budgets', 'critical'],
+                'finance.procurement.validate_budget' => ['Validate budget', 'high'],
+                'finance.procurement.approve_financially' => ['Financial approve', 'critical'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [

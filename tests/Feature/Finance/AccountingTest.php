@@ -80,7 +80,7 @@ class AccountingTest extends TestCase
     public function test_invoice_event_posting()
     {
         $j = app(AccountingService::class)->postEvent('invoice_issued', 1, 10000, $this->hq, $this->admin->id);
-        $this->assertEquals(1200, $j->lines()->where('direction', 'debit')->first()->chart_of_account_id);
+        $this->assertEquals($this->acct('1200'), $j->lines()->where('direction', 'debit')->first()->chart_of_account_id);
         // duplicate event blocked by unique(source, source_id)
         $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
         app(AccountingService::class)->postEvent('invoice_issued', 1, 10000, $this->hq, $this->admin->id);
