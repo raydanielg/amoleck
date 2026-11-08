@@ -107,6 +107,12 @@ const navGroups: { label: string; items: (NavItem & { perm: string })[] }[] = [
                 perm: 'patientcare.treatment_plans.view',
             },
             {
+                title: 'Insurance',
+                href: '/admin/insurance',
+                icon: ShieldCheck,
+                perm: 'finance.insurance.view',
+            },
+            {
                 title: 'Finance',
                 href: '/admin/finance',
                 icon: Banknote,

@@ -17,4 +17,5 @@ class PatientCharge extends Model
     public function statusHistories(): HasMany { return $this->hasMany(ChargeStatusHistory::class, 'patient_charge_id'); }
     public function adjustments(): HasMany { return $this->hasMany(ChargeAdjustment::class, 'patient_charge_id'); }
     public function createdBy(): BelongsTo { return $this->belongsTo(\App\Models\User::class, 'created_by'); }
+    public function invoiceItem() { return $this->hasOne(InvoiceItem::class, 'patient_charge_id'); }
 }
