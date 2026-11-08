@@ -83,11 +83,11 @@ class AttendanceService
     /** Payroll-ready summary (M4 input): verified records only. */
     public function periodSummary(int $employeeId, string $from, string $to): array
     {
-        $rs = AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->get();
+        $rs = AttendanceRecord::where('employee_id', $employeeId)->whereDate('work_date', '>=', $from)->whereDate('work_date', '<=', $to)->get();
         // recompute at DB level to avoid stale casts
         return [
-            'worked_days' => AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->whereNotNull('clock_out')->count(),
-            'incomplete' => AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->whereNull('clock_out')->count(),
+            'worked_days' => AttendanceRecord::where('employee_id', $employeeId)->whereDate('work_date', '>=', $from)->whereDate('work_date', '<=', $to)->whereNotNull('clock_out')->count(),
+            'incomplete' => AttendanceRecord::where('employee_id', $employeeId)->whereDate('work_date', '>=', $from)->whereDate('work_date', '<=', $to)->whereNull('clock_out')->count(),
             'late_minutes' => $rs->sum('late_minutes'),
             'early_minutes' => $rs->sum('early_minutes'),
             'worked_minutes' => $rs->sum('worked_minutes'),

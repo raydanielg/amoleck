@@ -9,4 +9,6 @@ Route::middleware(['auth', 'verified', 'account.active', 'module.enabled:Adminis
     Route::post('employees/{employee}/transfer', [\Modules\Administration\Http\Controllers\HrController::class, 'transfer'])->name('employees.transfer')->middleware('can:hr.employees.transfer');
     Route::post('employees/{employee}/contracts', [\Modules\Administration\Http\Controllers\HrController::class, 'storeContract'])->name('contracts.store')->middleware('can:hr.contracts.manage');
     Route::post('positions', [\Modules\Administration\Http\Controllers\HrController::class, 'storePosition'])->name('positions.store')->middleware('can:hr.positions.manage');
+    Route::post('leave-requests/{leaveRequest}/transition', [\Modules\Administration\Http\Controllers\HrController::class, 'transitionLeave'])->name('leave.transition');
+    Route::post('leave-requests', [\Modules\Administration\Http\Controllers\HrController::class, 'storeLeave'])->name('leave.store');
 });

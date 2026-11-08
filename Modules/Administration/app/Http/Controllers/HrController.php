@@ -60,6 +60,22 @@ class HrController extends Controller
         return back()->with('toast', ['type' => 'success', 'message' => "Contract {$c->contract_number}"]);
     }
 
+    public function storeLeave(Request $request, \Modules\Administration\Services\LeaveService $svc)
+    {
+        $data = $request->validate(['employee_id' => 'required|exists:employees,id', 'leave_type_id' => 'required|exists:leave_types,id', 'branch_id' => 'required|exists:branches,id', 'start_date' => 'required|date', 'end_date' => 'required|date|after_or_equal:start_date', 'reason' => 'nullable|string|max:500']);
+        abort_unless(BranchContext::canAccess($request->user(), (int) $data['branch_id']), 403);
+        $r = $svc->request($data, $request->user()->id);
+        return back()->with('toast', ['type' => 'success', 'message' => "Leave {$r->request_number}"]);
+    }
+
+    public function transitionLeave(Request $request, \Modules\Administration\Models\LeaveRequest $leaveRequest, \Modules\Administration\Services\LeaveService $svc)
+    {
+        abort_unless($request->user()->can('hr.leave.approve'), 403);
+        $data = $request->validate(['status' => 'required|string', 'reason' => 'nullable|string|max:500']);
+        $svc->transition($leaveRequest, $data['status'], $request->user()->id, $data['reason'] ?? null);
+        return back()->with('toast', ['type' => 'success', 'message' => "Leave {$data['status']}"]);
+    }
+
     public function storePosition(Request $request)
     {
         abort_unless($request->user()->can('hr.positions.manage'), 403);

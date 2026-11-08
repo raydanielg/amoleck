@@ -113,8 +113,11 @@ class AttendanceTest extends TestCase
     {
         $svc = app(AttendanceService::class);
         $svc->assignShift($this->employee, $this->morning->id, $this->hq->id, today()->toDateString(), $this->admin->id);
+        Carbon::setTestNow(Carbon::parse(today()->toDateString().' '.$this->morning->starts_at));
         $r = $svc->clockIn($this->employee, $this->hq->id, $this->admin->id);
+        Carbon::setTestNow(Carbon::parse(today()->toDateString().' '.$this->morning->ends_at));
         $svc->clockOut($r, $this->admin->id);
+        Carbon::setTestNow();
         $sum = $svc->periodSummary($this->employee->id, today()->subDay()->toDateString(), today()->toDateString());
         $this->assertEquals(1, $sum['worked_days']);
         $this->assertGreaterThan(0, $sum['worked_minutes']);

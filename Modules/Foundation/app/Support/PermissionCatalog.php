@@ -273,6 +273,11 @@ class PermissionCatalog
                 'hr.attendance.verify' => ['Verify attendance', 'high'],
                 'hr.attendance.correct.approve' => ['Approve corrections', 'high'],
                 'hr.attendance.manage_schedules' => ['Manage schedules', 'high'],
+                'hr.leave.view' => ['View leave', 'medium'],
+                'hr.leave.request' => ['Request leave', 'medium'],
+                'hr.leave.approve' => ['Approve leave', 'high'],
+                'hr.leave.manage' => ['Manage leave', 'high'],
+                'hr.leave.adjust' => ['Adjust balances', 'critical'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
