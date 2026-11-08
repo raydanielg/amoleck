@@ -44,7 +44,7 @@ class AttendanceService
     public function clockOut(AttendanceRecord $r, int $userId): AttendanceRecord
     {
         abort_unless($r->clock_in && ! $r->clock_out, 422, 'No open attendance session.');
-        $r->update(['clock_out' => now()]);
+        $r->forceFill(['clock_out' => now()])->save();
         $a = $r->assignment;
         if ($a) {
             $shiftEnd = Carbon::parse($a->work_date->toDateString().' '.$a->shift->ends_at);
@@ -84,9 +84,10 @@ class AttendanceService
     public function periodSummary(int $employeeId, string $from, string $to): array
     {
         $rs = AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->get();
+        // recompute at DB level to avoid stale casts
         return [
-            'worked_days' => $rs->whereNotNull('clock_out')->count(),
-            'incomplete' => $rs->whereNull('clock_out')->count(),
+            'worked_days' => AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->whereNotNull('clock_out')->count(),
+            'incomplete' => AttendanceRecord::where('employee_id', $employeeId)->whereBetween('work_date', [$from, $to])->whereNull('clock_out')->count(),
             'late_minutes' => $rs->sum('late_minutes'),
             'early_minutes' => $rs->sum('early_minutes'),
             'worked_minutes' => $rs->sum('worked_minutes'),
