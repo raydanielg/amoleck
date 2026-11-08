@@ -60,7 +60,7 @@ class InsuranceService
     public function createClaim(PatientInsuranceMembership $m, int $invoiceId, int $userId): InsuranceClaim
     {
         $inv = \Modules\Finance\Models\Invoice::findOrFail($invoiceId);
-        abort_unless($inv->patient_id === $m->patient_id && in_array($inv->status, ['issued', 'overdue', 'partially_paid']), 422);
+        abort_unless($inv->patient_id === $m->patient_id && in_array($inv->status, ['issued', 'overdue', 'partially_paid', 'paid']), 422);
         $split = $this->coverageSplit($m, (float) $inv->total);
         $c = InsuranceClaim::create([
             'claim_number' => $this->nextNumber('CLM', 'insurance_claims', 'claim_number'),
