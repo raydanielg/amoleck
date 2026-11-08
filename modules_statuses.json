@@ -4,5 +4,6 @@
     "HospitalOperations": true,
     "Finance": true,
     "Administration": true,
-    "Inventory": true
+    "Inventory": true,
+    "Diagnostics": true
 }
