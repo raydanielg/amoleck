@@ -94,7 +94,7 @@ class BudgetService
             $c = $r->budgetLine->commitments()->create(['reference' => $this->nextNumber('COM', 'budget_commitments', 'reference'), 'amount' => $r->estimated_amount, 'source' => 'requisition', 'source_id' => $r->id, 'created_by' => $userId]);
             $r->update(['financial_status' => 'financially_approved', 'financial_approved_by' => $userId]);
             Audit::record('finance.commitment_created', null, null, ['com' => $c->reference, 'amount' => (string) $r->estimated_amount], $r->branch_id);
-            return $c;
+            return $c->fresh();
         });
     }
 

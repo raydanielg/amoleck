@@ -17,4 +17,5 @@ class PurchaseRequisition extends Model
     public function branch(): BelongsTo { return $this->belongsTo(\Modules\Foundation\Models\Branch::class); }
     public function department(): BelongsTo { return $this->belongsTo(\Modules\HospitalOperations\Models\Department::class); }
     public function account(): BelongsTo { return $this->belongsTo(ChartOfAccount::class, 'chart_of_account_id'); }
+    public function budgetLine(): BelongsTo { return $this->belongsTo(BudgetLine::class); }
 }
