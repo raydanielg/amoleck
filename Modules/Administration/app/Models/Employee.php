@@ -22,4 +22,5 @@ class Employee extends Model
     public function getFullNameAttribute(): string { return trim("{$this->first_name} {$this->middle_name} {$this->last_name}"); }
     public function attendanceRecords() { return $this->hasMany(AttendanceRecord::class); }
     public function salaries() { return $this->hasMany(EmployeeSalary::class); }
+    public function objectives() { return $this->hasMany(EmployeeObjective::class); }
 }

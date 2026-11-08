@@ -283,6 +283,13 @@ class PermissionCatalog
                 'hr.payroll.approve' => ['Approve payroll', 'critical'],
                 'hr.payroll.pay' => ['Process payments', 'critical'],
                 'hr.payroll.reports.view' => ['Payroll reports', 'medium'],
+                'hr.performance.view' => ['View performance', 'medium'],
+                'hr.performance.manage' => ['Manage performance', 'high'],
+                'hr.performance.approve' => ['Approve reviews', 'critical'],
+                'hr.recruitment.view' => ['View recruitment', 'medium'],
+                'hr.recruitment.manage' => ['Manage recruitment', 'high'],
+                'hr.training.view' => ['View training', 'medium'],
+                'hr.training.manage' => ['Manage training', 'high'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
