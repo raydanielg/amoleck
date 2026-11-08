@@ -54,7 +54,7 @@ class AccountingService
                 'source' => $source, 'source_id' => $sourceId, 'status' => 'posted',
                 'created_by' => $userId, 'posted_by' => $userId, 'posted_at' => now(),
             ]);
-            foreach ($lines as $l) { $j->lines()->create($l); }
+            foreach ($lines as $l) { $j->lines()->create(['chart_of_account_id' => $l['account_id'] ?? $l['chart_of_account_id'], 'direction' => $l['direction'], 'amount' => $l['amount'], 'memo' => $l['memo'] ?? null]); }
             Audit::record('finance.journal_posted', null, null, ['jv' => $j->journal_number, 'total' => $debit], $branchId);
             return $j;
         });
