@@ -30,7 +30,7 @@ class ModuleManagementTest extends TestCase
     {
         $this->assertEquals('active', $this->svc->statusOf('Foundation'));
         $this->assertEquals('active', $this->svc->statusOf('PatientCare'));
-        $this->assertEquals('unavailable', $this->svc->statusOf('Finance'));
+        $this->assertEquals('unavailable', $this->svc->statusOf('FakeModule'));
     }
 
     public function test_module_identifiers_are_unique()
@@ -51,7 +51,7 @@ class ModuleManagementTest extends TestCase
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         // simulate Finance dependency check by requiring its dep active — Foundation is active so test dep failure via fake dep
         SystemModule::where('identifier', 'finance')->update(['dependencies' => ['PatientCare']]);
-        $this->svc->setStatus('Finance', 'active');
+        $this->svc->setStatus('FakeModule', 'active');
     }
 
     public function test_cannot_disable_module_with_active_dependents()
@@ -115,7 +115,7 @@ class ModuleManagementTest extends TestCase
     public function test_unavailable_module_cannot_be_activated()
     {
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
-        $this->svc->setStatus('Finance', 'active');
+        $this->svc->setStatus('FakeModule', 'active');
     }
 
     public function test_features_registered_in_metadata()

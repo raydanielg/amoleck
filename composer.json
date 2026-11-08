@@ -42,7 +42,9 @@
             "Modules\\PatientCare\\": "Modules/PatientCare/app/",
             "Modules\\PatientCare\\Database\\": "Modules/PatientCare/database/",
             "Modules\\HospitalOperations\\": "Modules/HospitalOperations/app/",
-            "Modules\\HospitalOperations\\Database\\": "Modules/HospitalOperations/database/"
+            "Modules\\HospitalOperations\\Database\\": "Modules/HospitalOperations/database/",
+            "Modules\\Finance\\": "Modules/Finance/app/",
+            "Modules\\Finance\\Database\\": "Modules/Finance/database/"
         }
     },
     "autoload-dev": {

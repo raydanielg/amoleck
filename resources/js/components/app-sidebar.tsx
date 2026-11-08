@@ -13,6 +13,7 @@ import {
     Activity,
     Share2,
     Stethoscope,
+    Banknote,
     Pill,
     BedDouble,
     CalendarDays,
@@ -104,6 +105,12 @@ const navGroups: { label: string; items: (NavItem & { perm: string })[] }[] = [
                 href: '/admin/treatment-plans',
                 icon: ClipboardList,
                 perm: 'patientcare.treatment_plans.view',
+            },
+            {
+                title: 'Finance',
+                href: '/admin/finance',
+                icon: Banknote,
+                perm: 'finance.dashboard.view',
             },
             {
                 title: 'eMAR',

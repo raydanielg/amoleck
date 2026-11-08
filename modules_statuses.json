@@ -1,5 +1,6 @@
 {
     "Foundation": true,
     "PatientCare": true,
-    "HospitalOperations": true
+    "HospitalOperations": true,
+    "Finance": true
 }
