@@ -20,4 +20,5 @@ class Employee extends Model
     public function assignments(): HasMany { return $this->hasMany(EmployeeAssignment::class); }
     public function statusHistories(): HasMany { return $this->hasMany(EmployeeStatusHistory::class); }
     public function getFullNameAttribute(): string { return trim("{$this->first_name} {$this->middle_name} {$this->last_name}"); }
+    public function attendanceRecords() { return $this->hasMany(AttendanceRecord::class); }
 }

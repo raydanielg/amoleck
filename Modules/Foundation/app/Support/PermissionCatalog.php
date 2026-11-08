@@ -268,6 +268,11 @@ class PermissionCatalog
                 'hr.contracts.manage' => ['Manage contracts', 'high'],
                 'hr.positions.manage' => ['Manage positions', 'medium'],
                 'hr.reports.view' => ['HR reports', 'medium'],
+                'hr.attendance.view' => ['View attendance', 'medium'],
+                'hr.attendance.record' => ['Record attendance', 'medium'],
+                'hr.attendance.verify' => ['Verify attendance', 'high'],
+                'hr.attendance.correct.approve' => ['Approve corrections', 'high'],
+                'hr.attendance.manage_schedules' => ['Manage schedules', 'high'],
                 'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
