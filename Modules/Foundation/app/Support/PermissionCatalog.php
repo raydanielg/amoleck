@@ -252,6 +252,11 @@ class PermissionCatalog
                 'finance.insurance.claims.manage' => ['Manage claims', 'critical'],
                 'finance.corporate.view' => ['View corporate', 'medium'],
                 'finance.corporate.manage' => ['Manage corporate', 'critical'],
+                'finance.accounting.view' => ['View accounting', 'medium'],
+                'finance.accounting.manage' => ['Manage accounting', 'critical'],
+                'finance.journals.post' => ['Post journals', 'critical'],
+                'finance.expenses.manage' => ['Manage expenses', 'high'],
+                'finance.reports.view' => ['Financial reports', 'medium'],
             ],
             'Operations (future)' => [
                 'operations.appointments.view' => ['View appointments', 'low'],
